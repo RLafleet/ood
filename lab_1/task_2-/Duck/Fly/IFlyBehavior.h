@@ -1,4 +1,4 @@
-#ifndef LAB01_SIMUDUCK_IFLYBEHAVIOR_H
+﻿#ifndef LAB01_SIMUDUCK_IFLYBEHAVIOR_H
 #define LAB01_SIMUDUCK_IFLYBEHAVIOR_H
 
 struct IFlyBehavior
@@ -9,6 +9,7 @@ struct IFlyBehavior
 
 	virtual int GetFlightCount() const = 0;
 
+	//метод чужеродный
 	virtual int GetNextFlightCount() const = 0;
 };
 

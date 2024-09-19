@@ -89,6 +89,7 @@ private:
 	{
 		const auto nextFlightCount = m_flyBehavior->GetNextFlightCount();
 		// Кряк перед полетом (если нужно)
+		// у крыла конкретно спрашивать, можно ли летать
 		if (nextFlightCount != 0 && AllowQuacking(nextFlightCount))
 		{
 			std::cout << "I m happy ";
