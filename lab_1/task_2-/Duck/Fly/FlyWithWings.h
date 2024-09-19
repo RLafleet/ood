@@ -21,7 +21,7 @@ public:
 	int GetNextFlightCount() const override
 	{
 		return m_flyAmmount + 1;
-	}
+	}	
 
 private:
 	int m_flyAmmount = 0;

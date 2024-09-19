@@ -7,7 +7,7 @@
 class WaltzDance : public IDanceBehavior
 {
 public:
-    void Dance() const override
+    void Dance() override
     {
         std::cout << "I'm dancing the Watlz!" << std::endl;
     }

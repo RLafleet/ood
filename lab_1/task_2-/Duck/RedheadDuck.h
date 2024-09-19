@@ -15,9 +15,8 @@ public:
 	RedheadDuck()
 		: Duck(
 			std::make_unique<FlyWithWings>(), 
-			std::make_unique<MinuetDance>(), 
-			std::make_unique<QuackBehavior>(),
-			std::make_unique<OddFlightsQuacking>()
+			std::make_unique<MinuetDance>(),
+			std::make_unique<QuackBehavior>()
 		)
 	{
 	}

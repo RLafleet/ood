@@ -25,9 +25,6 @@
     <Filter Include="Header Files\Duck\Quack">
       <UniqueIdentifier>{4a395875-7f5c-48b2-aff6-503463ce8ea2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Duck\Sound">
-      <UniqueIdentifier>{7bf37d96-e0f7-407b-9cc3-02b4c42bcd7b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="task_2-.cpp">
@@ -88,15 +85,6 @@
     </ClInclude>
     <ClInclude Include="DuckFunctions.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IQuackSound.h">
-      <Filter>Header Files\Duck\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="OddFlyQuackSound.h">
-      <Filter>Header Files\Duck\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="EvenFlyQuackSound.h">
-      <Filter>Header Files\Duck\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

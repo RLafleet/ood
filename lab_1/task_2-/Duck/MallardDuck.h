@@ -15,8 +15,7 @@ public:
 		: Duck(
 			std::make_unique<FlyWithWings>(), 
 			std::make_unique<WaltzDance>(),
-			std::make_unique<QuackBehavior>(),
-			std::make_unique<EvenFlightsQuacking>()
+			std::make_unique<QuackBehavior>()
 			)
 	{
 	}

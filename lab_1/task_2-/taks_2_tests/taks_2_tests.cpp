@@ -9,7 +9,6 @@
 #include "../IQuackSound.h"
 #include <memory>
 
-// Заглушка для IFlyBehavior (летающая утка)
 class StubFlyBehavior : public IFlyBehavior {
 public:
     int flightCount = 0;
@@ -27,23 +26,20 @@ public:
     }
 };
 
-// Заглушка для IFlyBehavior (нелетающая утка)
 class StubNoFlyBehavior : public IFlyBehavior {
 public:
     void Fly() override {
-        // Никакой логики, утка не летает
     }
 
     int GetFlightCount() const override {
-        return 0;  // Всегда 0, так как утка не летает
+        return 0;  
     }
 
     int GetNextFlightCount() const override {
-        return 0;  // Всегда 0, утка не будет летать
+        return 0;  
     }
 };
 
-// Заглушка для IQuackBehavior
 class StubQuackBehavior : public IQuackBehavior {
 public:
     bool quacked = false;
@@ -57,7 +53,6 @@ public:
     }
 };
 
-// Заглушка для IDanceBehavior
 class StubDanceBehavior : public IDanceBehavior {
 public:
     bool danced = false;
@@ -71,20 +66,13 @@ public:
     }
 };
 
-class StubQuackSound : public IQuackSound {
-public:
-    bool AllowQuacking(int flightAmount) const override {
-        return (flightAmount % 2 == 0);  
-    }
-};
-
+// код отфарматировать
 class ModelTestDuck : public Duck {
 public:
     ModelTestDuck(std::unique_ptr<IFlyBehavior>&& flyBehavior,
         std::unique_ptr<IQuackBehavior>&& quackBehavior,
-        std::unique_ptr<IDanceBehavior>&& danceBehavior,
-        std::unique_ptr<IQuackSound>&& quackSound)
-        : Duck(std::move(flyBehavior), std::move(danceBehavior), std::move(quackBehavior), std::move(quackSound)) {}
+        std::unique_ptr<IDanceBehavior>&& danceBehavior)
+        : Duck(std::move(flyBehavior), std::move(danceBehavior), std::move(quackBehavior)) {}
 
     void Display() const override {
     }
@@ -92,13 +80,11 @@ public:
 
 TEST_CASE("Duck can dance") {
     auto danceBehavior = std::make_unique<StubDanceBehavior>();
-    auto quackSound = std::make_unique<StubQuackSound>();
 
     ModelTestDuck duck(
         std::make_unique<StubFlyBehavior>(),
         std::make_unique<StubQuackBehavior>(),
-        std::move(danceBehavior),
-        std::make_unique<StubQuackSound>()
+        std::move(danceBehavior)
     );
 
     duck.Dance();
@@ -109,13 +95,11 @@ TEST_CASE("Duck can dance") {
 TEST_CASE("Flyable duck quacks after even flight") {
     auto flyBehavior = std::make_unique<StubFlyBehavior>();
     auto quackBehavior = std::make_unique<StubQuackBehavior>();
-    auto quackSound = std::make_unique<StubQuackSound>();
 
     ModelTestDuck duck(
         std::move(flyBehavior),
         std::move(quackBehavior),
-        std::make_unique<StubDanceBehavior>(),
-        std::move(quackSound)
+        std::make_unique<StubDanceBehavior>()
     );
 
     duck.Fly();
@@ -130,13 +114,11 @@ TEST_CASE("Flyable duck quacks after even flight") {
 TEST_CASE("Not flyable duck doesn't quack after odd flight") {
     auto flyBehavior = std::make_unique<StubNoFlyBehavior>();
     auto quackBehavior = std::make_unique<StubQuackBehavior>();
-    auto quackSound = std::make_unique<StubQuackSound>();
 
     ModelTestDuck duck(
         std::move(flyBehavior),
         std::move(quackBehavior),
-        std::make_unique<StubDanceBehavior>(),
-        std::move(quackSound)
+        std::make_unique<StubDanceBehavior>()
     );
 
     duck.Fly();
@@ -149,13 +131,11 @@ TEST_CASE("Not flyable duck doesn't quack after odd flight") {
 TEST_CASE("Not flyable duck doesn't quack after even flight") {
     auto flyBehavior = std::make_unique<StubNoFlyBehavior>();
     auto quackBehavior = std::make_unique<StubQuackBehavior>();
-    auto quackSound = std::make_unique<StubQuackSound>();
 
     ModelTestDuck duck(
         std::move(flyBehavior),
         std::move(quackBehavior),
-        std::make_unique<StubDanceBehavior>(),
-        std::move(quackSound)
+        std::make_unique<StubDanceBehavior>()
     );
 
     duck.Fly();

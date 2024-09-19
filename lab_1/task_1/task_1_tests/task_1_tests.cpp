@@ -12,18 +12,21 @@ const std::string danceNoWayOutput = "";
 const std::string danceMinuetOutput = "I'm dancing the Minuet!\n";
 const std::string danceWaltzOutput = "I'm dancing the Waltz!\n";
 
-class MockDanceBehavior : public IDanceBehavior {
+class MockDanceBehavior : public IDanceBehavior 
+{
 public:
     std::string output;
 
     MockDanceBehavior(const std::string& expectedOutput)
         : output(""), expectedOutput(expectedOutput) {}
 
-    void Dance() override {
+    void Dance() override 
+    {
         output = expectedOutput;
     }
 
-    const std::string& GetOutput() const {
+    const std::string& GetOutput() const 
+    {
         return output;
     }
 
@@ -37,12 +40,13 @@ void assertDance(Duck& duck, const std::string& expectedOutput) {
 
     duck.SetDanceBehavior(std::move(mockDance));
     duck.Dance();
+    // счётчик ввести для танцев
 
 
     REQUIRE(mockDancePtr->GetOutput() == expectedOutput);
 }
 
-TEST_CASE("Duck Dance Tests", "[dance]") {
+TEST_CASE("Duck Dance Tests") {
     SECTION("Mallard Duck") {
         MallardDuck duck;
         assertDance(duck, danceWaltzOutput);

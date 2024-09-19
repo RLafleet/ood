@@ -148,9 +148,6 @@
     <ClInclude Include="Duck\Quack\SqueakBehavior.h" />
     <ClInclude Include="Duck\RedheadDuck.h" />
     <ClInclude Include="Duck\RubberDuck.h" />
-    <ClInclude Include="IQuackSound.h" />
-    <ClInclude Include="EvenFlyQuackSound.h" />
-    <ClInclude Include="OddFlyQuackSound.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

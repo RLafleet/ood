@@ -1,4 +1,4 @@
-#ifndef DUCK_H
+﻿#ifndef DUCK_H
 #define DUCK_H
 
 #include "Fly/IFlyBehavior.h"
@@ -38,6 +38,8 @@ public:
 		m_flyBehavior->Fly();
 	}
 		
+
+	// зачем virtual
 	virtual void Dance()
 	{
 		m_danceBehavior->Dance();
@@ -49,6 +51,9 @@ public:
 		m_flyBehavior = std::move(flyBehavior);
 	}
 
+	// так неправильно
+	// зачем вводим интерфейсы
+	// уметь объяснить в каком интерфейсе можем делать константным, а в каком нет. И кто принимает решения о том, какие методы интерфейса должны быть констатными, а какие нет
 	void SetDanceBehavior(std::unique_ptr<IDanceBehavior>&& danceBehavior)
 	{
 		assert(danceBehavior);
