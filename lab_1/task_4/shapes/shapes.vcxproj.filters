@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Shape">
+      <UniqueIdentifier>{9c031312-718e-4674-a663-65257b0a491c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shape\PaintingStrategy">
+      <UniqueIdentifier>{9bef73cf-8b8b-41e5-b097-fa474091bf8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Picture">
+      <UniqueIdentifier>{914caa36-7b6b-4716-8115-b77f54eab3fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Controller">
+      <UniqueIdentifier>{039ca304-b18e-4355-a564-76375d57a1c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Canvas">
+      <UniqueIdentifier>{22cd8916-694c-4997-bcfc-4ffc043c58a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Picture">
+      <UniqueIdentifier>{f1dd2290-31da-4cf8-a5ed-b2a079043782}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shape">
+      <UniqueIdentifier>{db8900ea-0c06-4e77-bf87-ae16e6e36fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Canvas">
+      <UniqueIdentifier>{d388cbde-c622-47be-adb0-0ccc79387ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Controller">
+      <UniqueIdentifier>{c06953dc-2259-4744-8835-0ce6bb2aef73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Canvas\Format">
+      <UniqueIdentifier>{97356273-8cd1-458f-8c11-bb73f2863bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Controller\Format">
+      <UniqueIdentifier>{7360f745-4fa6-48df-b99d-f875a4f38def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shape\PaintingStrategy\Point">
+      <UniqueIdentifier>{b59ed3f1-4e42-43d2-a43d-cb0a541ed70e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Picture.cpp">
+      <Filter>Source Files\Picture</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="SVGCanvas.cpp">
+      <Filter>Source Files\Canvas\Format</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="IDrawable.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="ICanvas.h">
+      <Filter>Header Files\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="CirclePaintingStrategy.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="LinePaintingStrategy.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="RectanglePaintingStrategy.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="TextPaintingStrategy.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="TrianglePaintingStrategy.h">
+      <Filter>Header Files\Shape\PaintingStrategy</Filter>
+    </ClInclude>
+    <ClInclude Include="Picture.h">
+      <Filter>Header Files\Picture</Filter>
+    </ClInclude>
+    <ClInclude Include="Transmitter.h">
+      <Filter>Header Files\Picture</Filter>
+    </ClInclude>
+    <ClInclude Include="FiguresType.h">
+      <Filter>Header Files\Picture</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="SVGCanvas.h">
+      <Filter>Header Files\Controller\Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files\Shape\PaintingStrategy\Point</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
