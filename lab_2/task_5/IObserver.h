@@ -21,4 +21,4 @@ public:
     virtual void Update(const T& data, const IObservable<T>& observable) = 0;
 };
 
-#endif //IOBSERVER_H
+#endif //IOBSERVER_H        

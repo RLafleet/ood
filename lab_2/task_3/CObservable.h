@@ -4,7 +4,6 @@
 #include <map>
 #include "IObservable.h"
 
-// Реализация интерфейса IObservable
 template<class T>
 class CObservable : public IObservable<T> {
 public:
@@ -34,8 +33,6 @@ public:
     }
 
 protected:
-    // Классы-наследники должны перегрузить данный метод,
-    // в котором возвращать информацию об изменениях в объекте
     virtual T GetChangedData() const = 0;
 
 private:

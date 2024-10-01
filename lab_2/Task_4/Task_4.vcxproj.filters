@@ -30,28 +30,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CObservable.h">
-      <Filter>Header Files\Header Files\Observable</Filter>
+      <Filter>Header Files\Header Files\Observer</Filter>
     </ClInclude>
     <ClInclude Include="IObservable.h">
-      <Filter>Header Files\Header Files\Observable</Filter>
+      <Filter>Header Files\Header Files\Observer</Filter>
     </ClInclude>
     <ClInclude Include="IObserver.h">
-      <Filter>Header Files\Header Files\Observable</Filter>
-    </ClInclude>
-    <ClInclude Include="SWeatherData.h">
       <Filter>Header Files\Header Files\Observer</Filter>
     </ClInclude>
     <ClInclude Include="CWeatherData.h">
-      <Filter>Header Files\Header Files\Observer</Filter>
+      <Filter>Header Files\Header Files\Observable</Filter>
     </ClInclude>
     <ClInclude Include="CStatsDisplay.h">
-      <Filter>Header Files\Header Files\Observer</Filter>
+      <Filter>Header Files\Header Files\Observable</Filter>
     </ClInclude>
     <ClInclude Include="CStat.h">
-      <Filter>Header Files\Header Files\Observer</Filter>
+      <Filter>Header Files\Header Files\Observable</Filter>
     </ClInclude>
     <ClInclude Include="CDisplay.h">
-      <Filter>Header Files\Header Files\Observer</Filter>
+      <Filter>Header Files\Header Files\Observable</Filter>
+    </ClInclude>
+    <ClInclude Include="SWeatherData.h">
+      <Filter>Header Files\Header Files\Observable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

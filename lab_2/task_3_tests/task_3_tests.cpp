@@ -42,7 +42,6 @@ private:
 
 std::vector<std::string> MockObserver::m_order = {};
 
-// Тест на удаление наблюдателя при уведомлении
 TEST_CASE("SelfRemovingObserver removes itself on update", "[CObservable]") {
     CWeatherData wd;
 
@@ -59,7 +58,6 @@ TEST_CASE("SelfRemovingObserver removes itself on update", "[CObservable]") {
     wd.SetMeasurements(-10, .8, 761);
 }
 
-// Тест с несколькими самоустраняющимися наблюдателями
 TEST_CASE("Multiple self-removing observers", "[CObservable]") {
     CWeatherData weatherData;
 
@@ -79,7 +77,6 @@ TEST_CASE("Multiple self-removing observers", "[CObservable]") {
     weatherData.SetMeasurements(10, 75, 770);
 }
 
-// Тест на уведомление наблюдателей с учетом приоритета
 TEST_CASE("Observers notified in priority order", "[CObservable]") {
     CWeatherData weatherData;
 
@@ -99,7 +96,6 @@ TEST_CASE("Observers notified in priority order", "[CObservable]") {
     REQUIRE(MockObserver::GetOrder() == expectedOrder);
 }
 
-// Тест на уведомление наблюдателей с одинаковым приоритетом
 TEST_CASE("Observers with same priority notified in registration order", "[CObservable]") {
     CWeatherData weatherData;
 
@@ -119,7 +115,6 @@ TEST_CASE("Observers with same priority notified in registration order", "[CObse
     REQUIRE(MockObserver::GetOrder() == expectedOrder);
 }
 
-// Тест на уведомление наблюдателей после удаления
 TEST_CASE("Observers notified after one is removed", "[CObservable]") {
     CWeatherData weatherData;
 

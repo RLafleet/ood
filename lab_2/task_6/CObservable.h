@@ -18,7 +18,7 @@ public:
         m_observers.insert({ priority, &observer });
     }
 
-    void NotifyObservers()
+    void NotifyObservers() override
     {
         std::vector<std::pair<unsigned, IObserver<T>*>> observersCopy(m_observers.begin(), m_observers.end());
         std::sort(observersCopy.begin(), observersCopy.end(), [](const auto& lhs, const auto& rhs) {
@@ -27,7 +27,7 @@ public:
 
         for (auto& [priority, observer] : observersCopy)
         {
-            observer->Update(GetChangedData(), *this);  
+            observer->Update(GetChangedData(), static_cast<const IObservable<T>*>(this));
         }
     }
 
@@ -48,6 +48,8 @@ public:
     }
 
 protected:
+    // Классы-наследники должны перегрузить данный метод,
+    // в котором возвращать информацию об изменениях в объекте
     virtual T GetChangedData() const = 0;
 
 private:

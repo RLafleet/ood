@@ -11,6 +11,8 @@ class CDisplay final : public IObserver<SWeatherData>
         Классу CObservable он будет доступен все равно, т.к. в интерфейсе IObserver он
         остается публичным
     */
+
+private:
     void Update(SWeatherData const& data) override
     {
         std::cout << "Current Temp " << data.temperature << std::endl;

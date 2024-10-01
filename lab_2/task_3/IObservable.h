@@ -2,10 +2,6 @@
 #define IOBSERVABLE_H
 #include "IObserver.h"
 
-/*
-Шаблонный интерфейс IObservable. Позволяет подписаться и отписаться на оповещения, а также
-инициировать рассылку уведомлений зарегистрированным наблюдателям.
-*/
 template<typename T>
 class IObservable {
 public:

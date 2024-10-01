@@ -30,62 +30,77 @@ private:
 	}
 };
 
-template <typename T>
-class CStatsCalculator
+class CStat
 {
 public:
-	void Update(T value)
+	void AddValue(const double value)
 	{
-		if (m_min > value)
+		if (m_minValue > value)
 		{
-			m_min = value;
+			m_minValue = value;
 		}
-		if (m_max < value)
+		if (m_maxValue < value)
 		{
-			m_max = value;
+			m_maxValue = value;
 		}
-		m_accumulated += value;
-		++m_count;
-	}	
+		m_accValue += value;
+		++m_countAcc;
+	}
 
-	T GetMin() const { return m_min; }
-	T GetMax() const { return m_max; }
-	T GetAverage() const { return m_accumulated / m_count; }
+	[[nodiscard]] double GetAverage() const
+	{
+		return m_accValue / m_countAcc;
+	}
+
+	[[nodiscard]] double GetMin() const
+	{
+		return m_minValue;
+	}
+
+	[[nodiscard]] double GetMax() const
+	{
+		return m_maxValue;
+	}
 
 private:
-	T m_min = std::numeric_limits<T>::infinity();
-	T m_max = -std::numeric_limits<T>::infinity();
-	T m_accumulated = 0;
-	unsigned m_count = 0;
+	double m_minValue = std::numeric_limits<double>::infinity();
+	double m_maxValue = -std::numeric_limits<double>::infinity();
+	double m_accValue = 0;
+	unsigned m_countAcc = 0;
 };
 
-class CStatsDisplay : public IObserver<SWeatherData>
+
+class CStatsDisplay final : public IObserver<SWeatherData>
 {
 private:
-	CStatsCalculator<double> m_temperatureStats;
-	CStatsCalculator<double> m_humidityStats;
-	CStatsCalculator<double> m_pressureStats;
-
+	/* Метод Update сделан приватным, чтобы ограничить возможность его вызова напрямую
+	Классу CObservable он будет доступен все равно, т.к. в интерфейсе IObserver он
+	остается публичным
+	*/
 	void Update(SWeatherData const& data) override
 	{
-		m_temperatureStats.Update(data.temperature);
-		m_humidityStats.Update(data.humidity);
-		m_pressureStats.Update(data.pressure);
+		m_temperatureStatistics.AddValue(data.temperature);
+		m_humidityStatistics.AddValue(data.humidity);
+		m_pressureStatistics.AddValue(data.pressure);
 
-		std::cout << "Temperature Stats - Max: " << m_temperatureStats.GetMax()
-			<< " Min: " << m_temperatureStats.GetMin()
-			<< " Avg: " << m_temperatureStats.GetAverage() << std::endl;
+		std::cout << "Max Temp " << m_temperatureStatistics.GetMax() << std::endl;
+		std::cout << "Min Temp " << m_temperatureStatistics.GetMin() << std::endl;
+		std::cout << "Average Temp " << m_temperatureStatistics.GetAverage() << std::endl;
 
-		std::cout << "Humidity Stats - Max: " << m_humidityStats.GetMax()
-			<< " Min: " << m_humidityStats.GetMin()
-			<< " Avg: " << m_humidityStats.GetAverage() << std::endl;
+		std::cout << "Max Hum " << m_humidityStatistics.GetMax() << std::endl;
+		std::cout << "Min Hum " << m_humidityStatistics.GetMin() << std::endl;
+		std::cout << "Average Hum " << m_humidityStatistics.GetAverage() << std::endl;
 
-		std::cout << "Pressure Stats - Max: " << m_pressureStats.GetMax()
-			<< " Min: " << m_pressureStats.GetMin()
-			<< " Avg: " << m_pressureStats.GetAverage() << std::endl;
+		std::cout << "Max Pressure " << m_pressureStatistics.GetMax() << std::endl;
+		std::cout << "Min Pressure " << m_pressureStatistics.GetMin() << std::endl;
+		std::cout << "Average Pressure " << m_pressureStatistics.GetAverage() << std::endl;
 
 		std::cout << "----------------" << std::endl;
 	}
+
+	CStat m_temperatureStatistics{};
+	CStat m_humidityStatistics{};
+	CStat m_pressureStatistics{};
 };
 
 class CWeatherData : public CObservable<SWeatherData>

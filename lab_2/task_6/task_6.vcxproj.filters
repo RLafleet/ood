@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Observable">
-      <UniqueIdentifier>{dc784dc9-dea5-4db2-a6df-0d34acf53b6d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Observer">
-      <UniqueIdentifier>{3e7e72f7-f4ec-4d66-9c33-0c47ac21d0b0}</UniqueIdentifier>
+      <UniqueIdentifier>{d9af1220-e759-4cce-9298-7ca44f5e54ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Observable">
+      <UniqueIdentifier>{0a7d0edf-d4a6-4240-a79b-3fd27417fca2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,16 +35,19 @@
     <ClInclude Include="IObserver.h">
       <Filter>Header Files\Observer</Filter>
     </ClInclude>
-    <ClInclude Include="CWeatherData.h">
-      <Filter>Header Files\Observable</Filter>
-    </ClInclude>
-    <ClInclude Include="CStatsDisplay.h">
+    <ClInclude Include="CDisplay.h">
       <Filter>Header Files\Observable</Filter>
     </ClInclude>
     <ClInclude Include="CStat.h">
       <Filter>Header Files\Observable</Filter>
     </ClInclude>
-    <ClInclude Include="CDisplay.h">
+    <ClInclude Include="CStatsDisplay.h">
+      <Filter>Header Files\Observable</Filter>
+    </ClInclude>
+    <ClInclude Include="CStatWindDirection.h">
+      <Filter>Header Files\Observable</Filter>
+    </ClInclude>
+    <ClInclude Include="CWeatherData.h">
       <Filter>Header Files\Observable</Filter>
     </ClInclude>
     <ClInclude Include="SWeatherData.h">

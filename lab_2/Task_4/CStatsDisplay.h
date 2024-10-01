@@ -2,18 +2,19 @@
 #define CSTATSDISPLAY_H
 
 #include <iostream>
-
 #include "CStat.h"
 #include "IObserver.h"
 #include "SWeatherData.h"
 
 class CStatsDisplay final : public IObserver<SWeatherData>
 {
-    /* Метод Update сделан приватным, чтобы ограничить возможность его вызова напрямую
-    Классу CObservable он будет доступен все равно, т.к. в интерфейсе IObserver он
-    остается публичным
-    */
-    void Update(SWeatherData const& data) override
+
+private:
+    CStat m_temperatureStatistics{};
+    CStat m_humidityStatistics{};
+    CStat m_pressureStatistics{};
+
+    void Update(const SWeatherData& data, const IObservable<SWeatherData>& observable) override
     {
         m_temperatureStatistics.AddValue(data.temperature);
         m_humidityStatistics.AddValue(data.humidity);
@@ -33,10 +34,6 @@ class CStatsDisplay final : public IObserver<SWeatherData>
 
         std::cout << "----------------" << std::endl;
     }
-
-    CStat m_temperatureStatistics{};
-    CStat m_humidityStatistics{};
-    CStat m_pressureStatistics{};
 };
 
 #endif //CSTATSDISPLAY_H

@@ -6,7 +6,6 @@
 #include <vector>
 #include "IObservable.h"
 
-// Реализация интерфейса IObservable
 template<class T>
 class CObservable : public IObservable<T> 
 {
@@ -18,7 +17,7 @@ public:
         m_observers.insert({ priority, &observer });
     }
 
-    void NotifyObservers()
+    void NotifyObservers() override
     {
         std::vector<std::pair<unsigned, IObserver<T>*>> observersCopy(m_observers.begin(), m_observers.end());
         std::sort(observersCopy.begin(), observersCopy.end(), [](const auto& lhs, const auto& rhs) {
