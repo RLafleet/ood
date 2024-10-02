@@ -8,17 +8,17 @@
 
 // Реализация интерфейса IObservable
 template<class T>
-class CObservable : public IObservable<T> 
+class CObservable : public IObservable<T>
 {
 public:
     typedef IObserver<T> ObserverType;
 
-    void RegisterObserver(unsigned priority, ObserverType& observer) override 
+    void RegisterObserver(unsigned priority, ObserverType& observer) override
     {
         m_observers.insert({ priority, &observer });
     }
 
-    void NotifyObservers()
+    void NotifyObservers() override
     {
         std::vector<std::pair<unsigned, IObserver<T>*>> observersCopy(m_observers.begin(), m_observers.end());
         std::sort(observersCopy.begin(), observersCopy.end(), [](const auto& lhs, const auto& rhs) {
@@ -27,20 +27,20 @@ public:
 
         for (auto& [priority, observer] : observersCopy)
         {
-            observer->Update(GetChangedData(), *this);  
+            observer->Update(GetChangedData(), static_cast<const IObservable<T>*>(this));
         }
     }
 
 
-    void RemoveObserver(ObserverType& observer) override 
+    void RemoveObserver(ObserverType& observer) override
     {
-        for (auto it = m_observers.begin(); it != m_observers.end();) 
+        for (auto it = m_observers.begin(); it != m_observers.end();)
         {
-            if (it->second == &observer) 
+            if (it->second == &observer)
             {
                 it = m_observers.erase(it);
             }
-            else 
+            else
             {
                 ++it;
             }
@@ -48,6 +48,8 @@ public:
     }
 
 protected:
+    // Классы-наследники должны перегрузить данный метод,
+    // в котором возвращать информацию об изменениях в объекте
     virtual T GetChangedData() const = 0;
 
 private:

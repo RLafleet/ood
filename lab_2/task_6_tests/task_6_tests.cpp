@@ -9,21 +9,17 @@ TEST_CASE("Wind speed measurement works correctly")
     CWeatherData weatherDataOut;
     CStatsDisplay statsDisplay(&weatherDataIn, &weatherDataOut);
 
-    // Подписываем дисплей на обновления погоды
     weatherDataOut.RegisterObserver(1, statsDisplay);
 
-    // Устанавливаем измерения с разной скоростью ветра
     weatherDataOut.SetMeasurements(25.0, 65.0, 750.0, 10.0, 45.0);
     weatherDataOut.SetMeasurements(20.0, 60.0, 755.0, 15.0, 90.0);
     weatherDataOut.SetMeasurements(30.0, 70.0, 760.0, 20.0, 135.0);
 
-    // Проверяем минимальное, максимальное и среднее значения скорости ветра
     REQUIRE(statsDisplay.GetWindSpeedStatsOut().GetMin() == 10.0);
     REQUIRE(statsDisplay.GetWindSpeedStatsOut().GetMax() == 20.0);
     REQUIRE(statsDisplay.GetWindSpeedStatsOut().GetAverage() == Approx(15.0).epsilon(0.01));
 }
 
-// Тестирование направления ветра
 TEST_CASE("Temperature statistics are calculated separately for indoor and outdoor stations") {
     CWeatherData weatherDataIn;
     CWeatherData weatherDataOut;

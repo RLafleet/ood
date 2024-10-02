@@ -1,5 +1,5 @@
-#include "WeatherData.h"
-
+﻿#include "WeatherData.h"
+// ДИАГРАММУ классов
 int main()
 {
 	CWeatherData wd;

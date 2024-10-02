@@ -8,29 +8,100 @@
 
 class CStatsDisplay final : public IObserver<SWeatherData>
 {
+public: 
+    CStatsDisplay() : m_weatherDataIn(nullptr), m_weatherDataOut(nullptr) {}
 
-private:
-    CStat m_temperatureStatistics{};
-    CStat m_humidityStatistics{};
-    CStat m_pressureStatistics{};
+    CStatsDisplay(
+        const CObservable<SWeatherData>* weatherDataIn,
+        const CObservable<SWeatherData>* weatherDataOut
+    ) : m_weatherDataIn(weatherDataIn), m_weatherDataOut(weatherDataOut)
+    {}
 
-    void Update(const SWeatherData& data, const IObservable<SWeatherData>& observable) override
+    const CStat& GetTemperatureStatsIn() const
     {
-        m_temperatureStatistics.AddValue(data.temperature);
-        m_humidityStatistics.AddValue(data.humidity);
-        m_pressureStatistics.AddValue(data.pressure);
+        return m_temperatureStatisticsIn;
+    }
+    const CStat& GetHumidityStatsIn() const
+    {
+        return m_humidityStatisticsIn;
+    }
+    const CStat& GetPressureStatsIn() const
+    {
+        return m_pressureStatisticsIn;
+    }
 
-        std::cout << "Max Temp " << m_temperatureStatistics.GetMax() << std::endl;
-        std::cout << "Min Temp " << m_temperatureStatistics.GetMin() << std::endl;
-        std::cout << "Average Temp " << m_temperatureStatistics.GetAverage() << std::endl;
+    const CStat& GetTemperatureStatsOut() const
+    {
+        return m_temperatureStatisticsOut;
+    }
+    const CStat& GetHumidityStatsOut() const
+    {
+        return m_humidityStatisticsOut;
+    }
+    const CStat& GetPressureStatsOut() const
+    {
+        return m_pressureStatisticsOut;
+    }
+private:
+    CStat m_temperatureStatisticsIn{};
+    CStat m_humidityStatisticsIn{};
+    CStat m_pressureStatisticsIn{};
 
-        std::cout << "Max Hum " << m_humidityStatistics.GetMax() << std::endl;
-        std::cout << "Min Hum " << m_humidityStatistics.GetMin() << std::endl;
-        std::cout << "Average Hum " << m_humidityStatistics.GetAverage() << std::endl;
+    CStat m_temperatureStatisticsOut{};
+    CStat m_humidityStatisticsOut{};
+    CStat m_pressureStatisticsOut{};
 
-        std::cout << "Max Pressure " << m_pressureStatistics.GetMax() << std::endl;
-        std::cout << "Min Pressure " << m_pressureStatistics.GetMin() << std::endl;
-        std::cout << "Average Pressure " << m_pressureStatistics.GetAverage() << std::endl;
+    const CObservable<SWeatherData>* m_weatherDataIn;
+    const CObservable<SWeatherData>* m_weatherDataOut;
+
+    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable) override
+    {
+        if (observable == m_weatherDataIn)
+        {
+            m_temperatureStatisticsIn.AddValue(data.temperature);
+            m_humidityStatisticsIn.AddValue(data.humidity);
+            m_pressureStatisticsIn.AddValue(data.pressure);
+
+            std::cout << "Current Location inside" << std::endl;
+
+            std::cout << "Max Temp " << m_temperatureStatisticsIn.GetMax() << std::endl;
+            std::cout << "Min Temp " << m_temperatureStatisticsIn.GetMin() << std::endl;
+            std::cout << "Average Temp " << m_temperatureStatisticsIn.GetAverage() << std::endl;
+
+            std::cout << "Max Hum " << m_humidityStatisticsIn.GetMax() << std::endl;
+            std::cout << "Min Hum " << m_humidityStatisticsIn.GetMin() << std::endl;
+            std::cout << "Average Hum " << m_humidityStatisticsIn.GetAverage() << std::endl;
+
+            std::cout << "Max Pressure " << m_pressureStatisticsIn.GetMax() << std::endl;
+            std::cout << "Min Pressure " << m_pressureStatisticsIn.GetMin() << std::endl;
+            std::cout << "Average Pressure " << m_pressureStatisticsIn.GetAverage() << std::endl;
+
+            std::cout << "----------------" << std::endl;
+        }
+        else if (observable == m_weatherDataOut)
+        {
+            m_temperatureStatisticsOut.AddValue(data.temperature);
+            m_humidityStatisticsOut.AddValue(data.humidity);
+            m_pressureStatisticsOut.AddValue(data.pressure);
+
+            std::cout << "Current Location outside" << std::endl;
+
+            std::cout << "Max Temp " << m_temperatureStatisticsOut.GetMax() << std::endl;
+            std::cout << "Min Temp " << m_temperatureStatisticsOut.GetMin() << std::endl;
+            std::cout << "Average Temp " << m_temperatureStatisticsOut.GetAverage() << std::endl;
+
+            std::cout << "Max Hum " << m_humidityStatisticsOut.GetMax() << std::endl;
+            std::cout << "Min Hum " << m_humidityStatisticsOut.GetMin() << std::endl;
+            std::cout << "Average Hum " << m_humidityStatisticsOut.GetAverage() << std::endl;
+
+            std::cout << "Max Pressure " << m_pressureStatisticsOut.GetMax() << std::endl;
+            std::cout << "Min Pressure " << m_pressureStatisticsOut.GetMin() << std::endl;
+            std::cout << "Average Pressure " << m_pressureStatisticsOut.GetAverage() << std::endl;
+        }
+        else
+        {
+            std::cout << "Unknown weather station" << std::endl;
+        }
 
         std::cout << "----------------" << std::endl;
     }

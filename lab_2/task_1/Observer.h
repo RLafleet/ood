@@ -47,6 +47,8 @@ public:
 	void NotifyObservers() override
 	{
 		T data = GetChangedData();
+		// выяснить почему удаление уведомляемого наблюдателя приводит в проблеме, а какого-то другого но не самого себя не приводит к проблеме
+		// знать и уметь объяснить какой тип между себъектом и наблюдателем используется
 		auto observersCopy = m_observers;  
 		for (auto& observer : observersCopy)
 		{

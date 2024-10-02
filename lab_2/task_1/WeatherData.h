@@ -72,6 +72,7 @@ private:
 
 class CStatsDisplay final : public IObserver<SWeatherData>
 {
+	// какая модель уведомеления наблюдателей используется и почему выбрана
 private:
 	/* Метод Update сделан приватным, чтобы ограничить возможность его вызова напрямую
 	Классу CObservable он будет доступен все равно, т.к. в интерфейсе IObserver он
@@ -129,11 +130,14 @@ public:
 
 	void SetMeasurements(double temp, double humidity, double pressure)
 	{
-		m_humidity = humidity;
-		m_temperature = temp;
-		m_pressure = pressure;
+		// лишний раз не уведомлять
+		if (m_temperature != temp || m_humidity != humidity || m_pressure != pressure) {
+			m_temperature = temp;
+			m_humidity = humidity;
+			m_pressure = pressure;
 
-		MeasurementsChanged();
+			MeasurementsChanged();
+		}
 	}
 protected:
 	SWeatherData GetChangedData()const override

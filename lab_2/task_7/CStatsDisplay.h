@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable) override
+    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable, EventType eventType) override
     {
         if (observable == m_weatherDataIn)
         {

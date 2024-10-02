@@ -3,7 +3,8 @@
 #include "IObserver.h"
 
 template<typename T>
-class IObservable {
+class IObservable 
+{
 public:
     virtual ~IObservable() = default;
 

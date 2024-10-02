@@ -1,9 +1,11 @@
 ﻿#ifndef CDISPLAY_H
 #define CDISPLAY_H
 
+#include "Events.h"
 #include <iostream>
 #include "IObserver.h"
 #include "SWeatherData.h"
+#include "CObservable.h"
 
 class CDisplay final : public IObserver<SWeatherData>
 {
@@ -15,13 +17,12 @@ public:
         CObservable<SWeatherData>* weatherDataOut
     ) : m_weatherDataIn(weatherDataIn), m_weatherDataOut(weatherDataOut)
     {}
-
-private:
     /*  Метод Update сделан приватным, чтобы ограничить возможность его вызова напрямую
         Классу CObservable он будет доступен все равно, т.к. в интерфейсе IObserver он
         остается публичным
     */
-    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable) override
+private:
+    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable, EventType eventType) override
     {
         std::string location = "unknown";
         if (observable == m_weatherDataIn)
@@ -33,10 +34,18 @@ private:
             location = "outside";
         }
 
+        if (eventType == EventType::Temperature)
+        {
+            std::cout << "Current Temperature: " << data.temperature << std::endl;
+        }
+        else if (eventType == EventType::Pressure)
+        {
+            std::cout << "Current Pressure: " << data.pressure << std::endl;
+        }
+
+        std::cout << "Current Humidity: " << data.humidity << std::endl;
         std::cout << "Current Location " << location << std::endl;
-        std::cout << "Current Temp " << data.temperature << std::endl;
         std::cout << "Current Hum " << data.humidity << std::endl;
-        std::cout << "Current Pressure " << data.pressure << std::endl;
         std::cout << "----------------" << std::endl;
     }
 

@@ -2,6 +2,7 @@
 #define IOBSERVER_H
 
 #include "IObservable.h"
+#include "Events.h"
 
 template<typename T>
 class IObservable;
@@ -18,7 +19,7 @@ class IObserver
 public:
     virtual ~IObserver() = default;
 
-    virtual void Update(const T& data, const IObservable<T>* observable) = 0;
+    virtual void Update(const T& data, const IObservable<T>* observable, EventType eventType) = 0;
 };
 
-#endif //IOBSERVER_H
+#endif //IOBSERVER_H        

@@ -32,7 +32,7 @@ public:
         }
         if (avgAngleDeg >= 360.0)
         {
-            avgAngleDeg -= 360.0; 
+            avgAngleDeg -= 360.0;
         }
 
         return avgAngleDeg;

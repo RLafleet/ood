@@ -5,28 +5,37 @@
 #include "IObservable.h"
 
 template<class T>
-class CObservable : public IObservable<T> {
+class CObservable : public IObservable<T> 
+{
 public:
     typedef IObserver<T> ObserverType;
 
-    void RegisterObserver(unsigned priority, ObserverType& observer) override {
+    void RegisterObserver(unsigned priority, ObserverType& observer) override 
+    {
         m_observers.insert({ priority, &observer });
     }
 
-    void NotifyObservers() override {
+    void NotifyObservers() override 
+    {
         T data = GetChangedData();
         auto observers = m_observers;
-        for (auto& [priority, observer] : observers) {
+        for (auto& [priority, observer] : observers) 
+        {
             observer->Update(data);
         }
     }
 
-    void RemoveObserver(ObserverType& observer) override {
-        for (auto it = m_observers.begin(); it != m_observers.end();) {
-            if (it->second == &observer) {
+    void RemoveObserver(ObserverType& observer) override 
+    {
+        // нужно удаление быстрее линейной
+        for (auto it = m_observers.begin(); it != m_observers.end();) 
+        {
+            if (it->second == &observer) 
+            {
                 it = m_observers.erase(it);
             }
-            else {
+            else 
+            {
                 ++it;
             }
         }
