@@ -8,11 +8,11 @@
 #include "IObservable.h"
 
 // Реализация интерфейса IObservable
-template<class T>
-class CObservable : public IObservable<T>
+template<class T, typename EventType>
+class CObservable : public IObservable<T, EventType>
 {
 public:
-    typedef IObserver<T> ObserverType;
+    typedef IObserver<T, EventType> ObserverType;
 
     void RegisterObserver(unsigned priority, ObserverType& observer, EventType eventType) override
     {
@@ -28,7 +28,6 @@ public:
         m_observers.at(eventType).at(priority).insert(&observer);
     }
 
-
     void RemoveObserver(ObserverType& observer, EventType eventType) override
     {
         for (auto& [priority, observers] : m_observers[eventType])
@@ -41,8 +40,6 @@ public:
     }
 
 protected:
-    // Классы-наследники должны перегрузить данный метод,
-    // в котором возвращать информацию об изменениях в объекте
     virtual T GetChangedData() const = 0;
 
     void NotifyObservers(EventType eventType)
@@ -53,11 +50,10 @@ protected:
         {
             for (auto& observer : observers)
             {
-                observer->Update(data, static_cast<const IObservable<T>*>(this), eventType);
+                observer->Update(data, static_cast<const IObservable<T, EventType>*>(this), eventType);
             }
         }
     }
-
 
 private:
     std::map<EventType, std::map<unsigned, std::unordered_set<ObserverType*>>> m_observers;

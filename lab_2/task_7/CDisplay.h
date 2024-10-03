@@ -7,14 +7,14 @@
 #include "SWeatherData.h"
 #include "CObservable.h"
 
-class CDisplay final : public IObserver<SWeatherData>
+class CDisplay final : public IObserver<SWeatherData, EventType>
 {
 public:
     CDisplay() : m_weatherDataIn(nullptr), m_weatherDataOut(nullptr) {}
 
     CDisplay(
-        CObservable<SWeatherData>* weatherDataIn,
-        CObservable<SWeatherData>* weatherDataOut
+        CObservable<SWeatherData, EventType>* weatherDataIn,
+        CObservable<SWeatherData, EventType>* weatherDataOut
     ) : m_weatherDataIn(weatherDataIn), m_weatherDataOut(weatherDataOut)
     {}
     /*  Метод Update сделан приватным, чтобы ограничить возможность его вызова напрямую
@@ -22,7 +22,7 @@ public:
         остается публичным
     */
 private:
-    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable, EventType eventType) override
+    void Update(const SWeatherData& data, const IObservable<SWeatherData, EventType>* observable, EventType eventType) override
     {
         std::string location = "unknown";
         if (observable == m_weatherDataIn)
@@ -49,8 +49,8 @@ private:
         std::cout << "----------------" << std::endl;
     }
 
-    const CObservable<SWeatherData>* m_weatherDataIn;
-    const CObservable<SWeatherData>* m_weatherDataOut;
+    const CObservable<SWeatherData, EventType>* m_weatherDataIn;
+    const CObservable<SWeatherData, EventType>* m_weatherDataOut;
 };
 
 #endif //CDISPLAY_H

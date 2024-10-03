@@ -4,7 +4,7 @@
 #include "IObservable.h"
 #include "Events.h"
 
-template<typename T>
+template<typename T, typename EventType>
 class IObservable;
 /*
 Шаблонный интерфейс IObserver. Его должен реализовывать класс,
@@ -13,13 +13,13 @@ class IObservable;
 передаваемого Наблюдателю в метод Update
 */
 
-template<typename T>
+template<typename T, typename EventType>
 class IObserver 
 {
 public:
     virtual ~IObserver() = default;
 
-    virtual void Update(const T& data, const IObservable<T>* observable, EventType eventType) = 0;
+    virtual void Update(const T& data, const IObservable<T, EventType>* observable, EventType eventType) = 0;
 };
 
 #endif //IOBSERVER_H        

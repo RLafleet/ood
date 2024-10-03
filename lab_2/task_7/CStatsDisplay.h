@@ -8,14 +8,14 @@
 #include "CObservable.h"
 #include "SWeatherData.h"
 
-class CStatsDisplay final : public IObserver<SWeatherData>
+class CStatsDisplay final : public IObserver<SWeatherData, EventType>
 {
 public:
     CStatsDisplay() : m_weatherDataIn(nullptr), m_weatherDataOut(nullptr) {}
 
     CStatsDisplay(
-        const CObservable<SWeatherData>* weatherDataIn,
-        const CObservable<SWeatherData>* weatherDataOut
+        const CObservable<SWeatherData, EventType>* weatherDataIn,
+        const CObservable<SWeatherData, EventType>* weatherDataOut
     ) : m_weatherDataIn(weatherDataIn), m_weatherDataOut(weatherDataOut)
     {}
 
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    void Update(const SWeatherData& data, const IObservable<SWeatherData>* observable, EventType eventType) override
+    void Update(const SWeatherData& data, const IObservable<SWeatherData, EventType>* observable, EventType eventType) override
     {
         if (observable == m_weatherDataIn)
         {
@@ -128,8 +128,8 @@ private:
     CStat m_windSpeedStatisticsOut{};
     CStatWindDirection m_windDirectionStatisticsOut{};
 
-    const CObservable<SWeatherData>* m_weatherDataIn;
-    const CObservable<SWeatherData>* m_weatherDataOut;
+    const CObservable<SWeatherData, EventType>* m_weatherDataIn;
+    const CObservable<SWeatherData, EventType>* m_weatherDataOut;
 };
 
 #endif // CSTATSDISPLAY_H

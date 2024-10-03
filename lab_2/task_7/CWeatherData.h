@@ -5,7 +5,7 @@
 #include "SWeatherData.h"
 #include "Events.h"
 
-class CWeatherData final : public CObservable<SWeatherData>
+class CWeatherData final : public CObservable<SWeatherData, EventType>
 {
 public:
     // Температура в градусах Цельсия
