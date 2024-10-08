@@ -8,9 +8,6 @@
 using namespace std;
 
 
-/*
-Функциональный объект, создающий лимонную добавку
-*/
 struct MakeLemon
 {
     explicit MakeLemon(unsigned quantity)
@@ -25,6 +22,44 @@ private:
     unsigned m_quantity;
 };
 
+struct MakeCream
+{
+    auto operator()(IBeveragePtr&& beverage) const
+    {
+        return make_unique<CCream>(std::move(beverage));
+    }
+};
+
+struct MakeChocolate
+{
+    explicit MakeChocolate(unsigned quantity)
+        : m_quantity(quantity > 5 ? 5 : quantity) 
+    {}
+
+    auto operator()(IBeveragePtr&& beverage) const
+    {
+        return make_unique<CChocolate>(std::move(beverage), m_quantity);
+    }
+
+private:
+    unsigned m_quantity;
+};
+
+struct MakeLiqueur
+{
+    explicit MakeLiqueur(LiqueurType type)
+        : m_type(type)
+    {}
+
+    auto operator()(IBeveragePtr&& beverage) const
+    {
+        return make_unique<CLiqueur>(std::move(beverage), m_type);
+    }
+
+private:
+    LiqueurType m_type;
+};
+
 function<IBeveragePtr(IBeveragePtr&&)> MakeCinnamon()
 {
     return [](IBeveragePtr&& b) {
@@ -35,11 +70,7 @@ function<IBeveragePtr(IBeveragePtr&&)> MakeCinnamon()
 template <typename Condiment, typename... Args>
 auto MakeCondiment(const Args&...args)
 {
-    // Возвращаем функцию, декорирующую напиток, переданный ей в качестве аргумента
-    // Дополнительные аргументы декоратора, захваченные лямбда-функцией, передаются
-    // конструктору декоратора через make_unique
     return [=](auto&& b) {
-        // Функции make_unique передаем b вместе со списком аргументов внешней функции
         return make_unique<Condiment>(std::forward<decltype(b)>(b), args...);
         };
 }
@@ -86,7 +117,7 @@ bool CompleteBeverageChoice(unique_ptr<IBeverage>& beverage, int beverageChoice)
         return true;
     case 4:
     {
-        cout << "Choose tea type (1 - Black, 2 - Green, 3 - Red): ";
+        cout << "Choose tea type (1 - Special edition, 2 - Green, 3 - Gray): ";
 
         int teaChoice;
         cin >> teaChoice;
@@ -137,9 +168,9 @@ bool CompleteCondimentChoice(unique_ptr<IBeverage>& beverage, int condimentChoic
         cout << "Choose Ice Cubes Type (1 - Water, 2 - Dry): ";
         int cubeChoice;
         cin >> cubeChoice;
-        if (cubeChoice > 2 or cubeChoice < 1)
+        if (cubeChoice > 2 || cubeChoice < 1)
         {
-            cout << "Invalid choice, try again)";
+            cout << "Invalid choice, try again)" << endl;
             return false;
         }
         beverage = std::move(beverage) << MakeCondiment<CIceCubes>
@@ -156,31 +187,77 @@ bool CompleteCondimentChoice(unique_ptr<IBeverage>& beverage, int condimentChoic
         int syrupChoice;
 
         cin >> syrupChoice;
-        if (syrupChoice > 2 or syrupChoice < 1)
+        if (syrupChoice > 2 || syrupChoice < 1)
         {
-            cout << "Invalid Syrup Type choice";
+            cout << "Invalid Syrup Type choice" << endl;
             return false;
         }
 
         beverage = std::move(beverage) << MakeCondiment<CSyrup>
             (syrupChoice == 1 ? SyrupType::Maple : SyrupType::Chocolate);
         return true;
+
+    case 7:
+        beverage = std::move(beverage) << MakeCream();
+        return true;
+
+    case 8:
+        cout << "How many pieces of chocolate would you like? (Max: 5): ";
+        int chocolateQuantity;
+        cin >> chocolateQuantity;
+
+        if (chocolateQuantity < 1 )
+        {
+            cout << "Invalid quantity choice" << endl;
+            return false;
+        }
+
+        beverage = std::move(beverage) << MakeChocolate(chocolateQuantity);
+        return true;
+
+    case 9:
+    {
+        int liqueurChoice;
+
+        cout << "Choose Liqueur Type (1 - Nut, 2 - Chocolate): ";
+
+        cin >> liqueurChoice;
+
+        if (liqueurChoice < 1 || liqueurChoice > 2)
+        {
+            cout << "Invalid Liqueur Type choice" << endl;
+            return false;
+        }
+
+        auto liqueurType = static_cast<LiqueurType>(liqueurChoice - 1);
+
+        beverage = std::move(beverage) << MakeLiqueur(liqueurType);
+        return true;
+    }
+
     case 0:
         cout << "Break" << endl;
         cout << beverage->GetDescription() << ", cost: " << beverage->GetCost() << endl;
         return false;
+
     default:
         cout << "Invalid choice condiment" << endl;
         return true;
     }
 }
-
 void DialogWithUser()
 {
     unique_ptr<IBeverage> beverage;
 
-    cout << "Choose your base beverage:\n";
-    cout << "1 - Coffee\n2 - Cappuccino\n3 - Latte\n4 - Tea\n5 - Milkshake\n";
+    cout << "==============================\n";
+    cout << "    Choose Your Beverage      \n";
+    cout << "==============================\n";
+    cout << "1 - Coffee                  \n";
+    cout << "2 - Cappuccino              \n";
+    cout << "3 - Latte                   \n";
+    cout << "4 - Tea                     \n";
+    cout << "5 - Milkshake               \n";
+    cout << "==============================\n";
 
     int beverageChoice;
     cin >> beverageChoice;
@@ -189,10 +266,20 @@ void DialogWithUser()
     {
         while (true)
         {
-            cout << "Choose your condiment:\n";
-            cout << "1 - Lemon\n2 - Cinnamon\n3 - Ice Cubes\n4 - Chocolate Crumbs\n";
-            cout << "5 - Coconut Flakes\n6 - Syrup\n";
-            cout << "0 - Break\n";
+            cout << "==============================\n";
+            cout << "      Choose Your Condiment   \n";
+            cout << "==============================\n";
+            cout << "1 - Lemon                  \n";
+            cout << "2 - Cinnamon               \n";
+            cout << "3 - Ice Cubes             \n";
+            cout << "4 - Chocolate Crumbs       \n";
+            cout << "5 - Coconut Flakes         \n";
+            cout << "6 - Syrup                 \n";
+            cout << "7 - Cream                 \n";
+            cout << "8 - Chocolate Slice        \n";
+            cout << "9 - Liqueur               \n";
+            cout << "0 - It'all                 \n";
+            cout << "==============================\n";
 
             int condimentChoice;
             cin >> condimentChoice;
@@ -229,7 +316,13 @@ void DialogWithUserDeprecated()
     int condimentChoice;
     for (;;)
     {
-        cout << "1 - Lemon, 2 - Cinnamon, 0 - Checkout" << endl;
+        cout << "==============================\n";
+        cout << "      Choose Your Condiment   \n";
+        cout << "==============================\n";
+        cout << "1 - Lemon                  \n";
+        cout << "2 - Cinnamon               \n";
+        cout << "0 - Checkout               \n";
+        cout << "==============================\n";
         cin >> condimentChoice;
 
         if (condimentChoice == 1)
