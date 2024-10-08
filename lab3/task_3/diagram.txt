@@ -1,0 +1,74 @@
+classDiagram
+    class IInputDataStream {
+        +ReadByte(): uint8_t
+        +ReadBlock(dstBuffer: void*, size: std::streamsize): std::streamsize
+        +IsEOF(): bool
+    }
+
+    class IOutputDataStream {
+        +WriteByte(data: uint8_t): void
+        +WriteBlock(srcData: void*, size: std::streamsize): void
+        +Close(): void
+    }
+
+    class FileInputStream {
+        +ReadByte(): uint8_t
+        +ReadBlock(dstBuffer: void*, size: std::streamsize): std::streamsize
+        +IsEOF(): bool
+        -std::ifstream m_file;
+    }
+
+    class FileOutputStream {
+        +WriteByte(data: uint8_t): void
+        +WriteBlock(srcData: void*, size: std::streamsize): void
+        +Close(): void
+        -std::ofstream m_file;
+    }
+
+    class DecryptInputStream {
+        +ReadByte(): uint8_t
+        +ReadBlock(dstBuffer: void*, size: std::streamsize): std::streamsize
+        +IsEOF(): bool
+        -std::unique_ptr<IInputDataStream> m_stream;
+        -std::vector<uint8_t> m_reverseTable;
+    }
+
+    class EncryptOutputStream {
+        +WriteByte(data: uint8_t): void
+        +WriteBlock(srcData: void*, size: std::streamsize): void
+        +Close(): void
+        -std::unique_ptr<IOutputDataStream> m_stream;
+	    -std::vector<uint8_t> m_table;
+    }
+
+    class DecompressInputStream {
+        +ReadByte(): uint8_t
+        +ReadBlock(dstBuffer: void*, size: std::streamsize): std::streamsize
+        +IsEOF(): bool
+        -bool FillBuffer()
+        -std::unique_ptr<IInputDataStream> m_stream;
+        -std::vector<uint8_t> m_buffer;
+        -size_t m_bufferPos;
+    }
+
+    class CompressOutputStream {
+        +WriteByte(data: uint8_t): void
+        +WriteBlock(srcData: void*, size: std::streamsize): void
+        +Close(): void
+        -FlushBuffer(): void
+        -m_stream: std::unique_ptr<IOutputDataStream>
+        -m_buffer: std::vector<uint8_t>
+    }
+
+    IInputDataStream <|-- FileInputStream
+    IInputDataStream <|-- DecryptInputStream
+    IInputDataStream <|-- DecompressInputStream
+
+    IOutputDataStream <|-- FileOutputStream
+    IOutputDataStream <|-- EncryptOutputStream
+    IOutputDataStream <|-- CompressOutputStream
+
+    CompressOutputStream o-- IOutputDataStream
+    EncryptOutputStream o-- IOutputDataStream
+    DecryptInputStream o-- IInputDataStream
+    DecompressInputStream o-- IInputDataStream
