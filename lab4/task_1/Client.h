@@ -5,7 +5,6 @@
 #include "IPainter.h"
 #include "IDesigner.h"
 
-// Клиент хранит интерфейс холста, он ему говорит 
 class Client
 {
 public:

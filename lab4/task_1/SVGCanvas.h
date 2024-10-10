@@ -26,6 +26,7 @@ namespace gfx
         void SaveToFile(const std::string& filename);
 
     private:
+        //m_
         int width, height;
         Color currentColor;
         double currentX, currentY;
