@@ -5,15 +5,15 @@
 #include <string>
 #include "Point.h"
 #include "Color.h"
-#include "CShape.h"
+#include "Shape.h"
 
-class Ellipse : public CShape
+class Ellipse : public Shape
 {
 public:
     constexpr static const char* type = "ellipse";
 
     Ellipse(Color color, Point center, double horizontalRadius, double verticalRadius) :
-        CShape(color), m_center(center), m_horizontalRadius(horizontalRadius), m_verticalRadius(verticalRadius) {}
+        Shape(color), m_center(center), m_horizontalRadius(horizontalRadius), m_verticalRadius(verticalRadius) {}
 
     void Draw(gfx::ICanvas& canvas) const override
     {

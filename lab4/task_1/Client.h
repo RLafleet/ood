@@ -1,5 +1,5 @@
-﻿#ifndef LAB4_CLIENT_H
-#define LAB4_CLIENT_H
+﻿#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "ICanvas.h"
 #include "IPainter.h"
@@ -15,7 +15,7 @@ public:
 
     void HandleCommand(std::istream& inputData, gfx::ICanvas& canvas, IPainter& painter)
     {
-        CPictureDraft pictureDraft = m_designer.CreateDraft(inputData);
+        PictureDraft pictureDraft = m_designer.CreateDraft(inputData);
 
         painter.DrawPicture(pictureDraft, canvas);
     }
@@ -24,4 +24,4 @@ private:
     IDesigner& m_designer;
 };
 
-#endif //LAB4_CLIENT_H
+#endif //CLIENT_H

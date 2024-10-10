@@ -1,14 +1,14 @@
-#ifndef LAB4_IDESIGNER_H
-#define LAB4_IDESIGNER_H
+#ifndef IDESIGNER_H
+#define IDESIGNER_H
 
-#include "CPictureDraft.h"
+#include "PictureDraft.h"
 
 class IDesigner
 {
 public:
-    virtual CPictureDraft CreateDraft(std::istream& inputData) = 0;
+    virtual PictureDraft CreateDraft(std::istream& inputData) = 0;
 
     virtual ~IDesigner() = default;
 };
 
-#endif //LAB4_IDESIGNER_H
+#endif //IDESIGNER_H

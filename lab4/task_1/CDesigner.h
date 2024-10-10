@@ -2,7 +2,7 @@
 #ifndef CDESIGNER_H
 #define CDESIGNER_H
 
-#include "CPictureDraft.h"
+#include "PictureDraft.h"
 #include "IDesigner.h"
 #include "IShapeFactory.h"
 
@@ -12,9 +12,9 @@ public:
     explicit CDesigner(IShapeFactory& factory)
         : m_factory(factory) {}
 
-    CPictureDraft CreateDraft(std::istream& inputData) override
+    PictureDraft CreateDraft(std::istream& inputData) override
     {
-        CPictureDraft draft;
+        PictureDraft draft;
         std::string line;
         while (getline(inputData, line))
         {

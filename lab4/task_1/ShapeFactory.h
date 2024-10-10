@@ -14,7 +14,7 @@
 class ShapeFactory : public IShapeFactory
 {
 public:
-    std::unique_ptr<CShape> CreateShape(const std::string& description) override
+    std::unique_ptr<Shape> CreateShape(const std::string& description) override
     {
         std::istringstream iss(description);
         

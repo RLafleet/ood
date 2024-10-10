@@ -1,16 +1,16 @@
-#ifndef LAB4_PICTUREDRAFT_H
-#define LAB4_PICTUREDRAFT_H
+#ifndef PICTUREDRAFT_H
+#define PICTUREDRAFT_H
 
 #include <vector>
 #include <memory>
-#include "CShape.h"
+#include "Shape.h"
 
-class CPictureDraft
+class PictureDraft
 {
 public:
-    typedef std::vector<std::unique_ptr<CShape>> Storage;
+    typedef std::vector<std::unique_ptr<Shape>> Storage;
 
-    void AddShape(std::unique_ptr<CShape>&& shape)
+    void AddShape(std::unique_ptr<Shape>&& shape)
     {
         m_shapes.push_back(std::move(shape));
     }
@@ -34,4 +34,4 @@ public:
 private:
     Storage m_shapes;
 };
-#endif //LAB4_PICTUREDRAFT_H
+#endif //PICTUREDRAFT_H

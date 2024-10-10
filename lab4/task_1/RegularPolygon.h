@@ -5,16 +5,16 @@
 #include <string>
 #include "Point.h"
 #include "Color.h"
-#include "CShape.h"
+#include "Shape.h"
 #include <corecrt_math_defines.h>
 
-class RegularPolygon : public CShape
+class RegularPolygon : public Shape
 {
 public:
     constexpr static const char* type = "regularPolygon";
 
     RegularPolygon(Color color, Point center, int pointsCount, double radius) :
-        CShape(color), m_center(center), m_pointsCount(pointsCount), m_radius(radius) {}
+        Shape(color), m_center(center), m_pointsCount(pointsCount), m_radius(radius) {}
 
     void Draw(gfx::ICanvas& canvas) const override
     {

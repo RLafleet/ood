@@ -38,7 +38,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CShape.h">
+    <ClInclude Include="Shape.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
     <ClInclude Include="ICanvas.h">
@@ -56,7 +56,7 @@
     <ClInclude Include="IDesigner.h">
       <Filter>Header Files\Designer</Filter>
     </ClInclude>
-    <ClInclude Include="CPictureDraft.h">
+    <ClInclude Include="PictureDraft.h">
       <Filter>Header Files\Designer</Filter>
     </ClInclude>
     <ClInclude Include="SVGCanvas.h">

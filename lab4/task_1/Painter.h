@@ -6,7 +6,7 @@
 class Painter : public IPainter
 {
 public:
-    void DrawPicture(const CPictureDraft& draft, gfx::ICanvas& canvas) override
+    void DrawPicture(const PictureDraft& draft, gfx::ICanvas& canvas) override
     {
         for (const auto& shape : draft) {
             shape->Draw(canvas);

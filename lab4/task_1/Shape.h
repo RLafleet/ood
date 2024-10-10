@@ -9,11 +9,10 @@
 #include "ICanvas.h"
 #include "Color.h"
 
-class CShape
+class Shape
 {
 public:
-    explicit CShape(Color color) :
-        m_color(color)
+    explicit Shape(Color color) : m_color(color)
     {}
 
     virtual void Draw(gfx::ICanvas& canvas) const = 0;
@@ -23,7 +22,7 @@ public:
         return m_color;
     }
 
-    virtual ~CShape() = default;
+    virtual ~Shape() = default;
 private:
     Color m_color;
 };

@@ -9,7 +9,6 @@ namespace gfx
     class ICanvas
     {
     public:
-
         virtual void SetColor(uint32_t color) = 0;
 
         virtual void MoveTo(double x, double y) = 0;

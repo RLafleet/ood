@@ -148,11 +148,11 @@
     <ClInclude Include="IPainter.h" />
     <ClInclude Include="IShapeFactory.h" />
     <ClInclude Include="Painter.h" />
-    <ClInclude Include="CPictureDraft.h" />
+    <ClInclude Include="PictureDraft.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RegularPolygon.h" />
     <ClInclude Include="Rectangle.h" />
-    <ClInclude Include="CShape.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeFactory.h" />
     <ClInclude Include="SVGCanvas.h" />
     <ClInclude Include="Triangle.h" />

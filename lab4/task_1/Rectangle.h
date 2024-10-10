@@ -5,15 +5,15 @@
 #include <string>
 #include "Point.h"
 #include "Color.h"
-#include "CShape.h"
+#include "Shape.h"
 
-class Rectangle : public CShape
+class Rectangle : public Shape
 {
 public:
     constexpr static const char* type = "rectangle";
 
     Rectangle(Color color, Point leftTop, double width, double height) :
-        CShape(color), m_leftTop(leftTop), m_width(width), m_height(height) {}
+        Shape(color), m_leftTop(leftTop), m_width(width), m_height(height) {}
 
     void Draw(gfx::ICanvas& canvas) const override
     {
