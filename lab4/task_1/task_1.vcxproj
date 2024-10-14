@@ -142,7 +142,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CDesigner.h" />
-    <ClInclude Include="Ellipse.h" />
+    <ClInclude Include="CEllipse.h" />
     <ClInclude Include="ICanvas.h" />
     <ClInclude Include="IDesigner.h" />
     <ClInclude Include="IPainter.h" />
@@ -151,11 +151,11 @@
     <ClInclude Include="PictureDraft.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RegularPolygon.h" />
-    <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="СRectangle.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeFactory.h" />
     <ClInclude Include="SVGCanvas.h" />
-    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="СTriangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

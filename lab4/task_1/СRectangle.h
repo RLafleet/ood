@@ -1,4 +1,4 @@
-#ifndef RECTANGLE_H
+﻿#ifndef RECTANGLE_H
 #define RECTANGLE_H
 
 #include <iostream>
@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class Rectangle : public Shape
+class СRectangle : public Shape
 {
 public:
     constexpr static const char* type = "rectangle";
 
-    Rectangle(Color color, Point leftTop, double width, double height) :
+    СRectangle(Color color, Point leftTop, double width, double height) :
         Shape(color), m_leftTop(leftTop), m_width(width), m_height(height) {}
 
     void Draw(gfx::ICanvas& canvas) const override

@@ -1,12 +1,12 @@
 ﻿#define CATCH_CONFIG_MAIN
 #include "../../Catch2/catch.hpp"
-#include "../task_1/Rectangle.h"
-#include "../task_1/Ellipse.h"
-#include "../task_1/Triangle.h"
+#include "../task_1/СRectangle.h"
+#include "../task_1/CEllipse.h"
+#include "../task_1/СTriangle.h"
 #include "../task_1/RegularPolygon.h"
 #include "../task_1/ShapeFactory.h"
 #include "../task_1/PictureDraft.h"
-#include "../task_1/Designer.h"
+#include "../task_1/IDesigner.h"
 #include "../task_1/Painter.h"
 #include "../task_1/Client.h"
 #include "../task_1/Point.h"
@@ -21,10 +21,6 @@ public:
 
     void MoveTo(double x, double y) override {
         actions.push_back("MoveTo: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
-    }
-
-    void LineTo(double x, double y) override {
-        actions.push_back("LineTo: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
     }
 
     void DrawEllipse(double cx, double cy, double rx, double ry) override {
@@ -46,27 +42,27 @@ void AssertEqualPoint(const Point& expected, const Point& actual)
     REQUIRE(expected.y == actual.y);
 }
 
-TEST_CASE("Rectangle: create success") {
+TEST_CASE("CRectangle: create success") {
     Color color = Color::BLACK;
     Point leftTop(10, 20);
     double width = 30;
     double height = 50;
 
-    Rectangle rectangle(color, leftTop, width, height);
+    СRectangle rectangle(color, leftTop, width, height);
 
     REQUIRE(rectangle.GetColor() == color);
     AssertEqualPoint(leftTop, rectangle.GetLeftTop());
     REQUIRE(rectangle.GetWidth() == width);
     REQUIRE(rectangle.GetHeight() == height);
-}
+}   
 
-TEST_CASE("Rectangle: draw success") {
+TEST_CASE("CRectangle: draw success") {
     Color color = Color::BLACK;
     Point leftTop(10, 20);
     double width = 30;
     double height = 50;
 
-    Rectangle rectangle(color, leftTop, width, height);
+    СRectangle rectangle(color, leftTop, width, height);
     MockCanvas mockCanvas;
 
     rectangle.Draw(mockCanvas);
@@ -80,13 +76,13 @@ TEST_CASE("Rectangle: draw success") {
     });
 }
 
-TEST_CASE("Ellipse: create success") {
+TEST_CASE("CEllipse: create success") {
     Color color = Color::BLACK;
     Point center(50, 50);
     double horizontalRadius = 30;
     double verticalRadius = 20;
 
-    Ellipse ellipse(color, center, horizontalRadius, verticalRadius);
+    СEllipse ellipse(color, center, horizontalRadius, verticalRadius);
 
     REQUIRE(ellipse.GetColor() == color);
     AssertEqualPoint(center, ellipse.GetCenter());
@@ -94,13 +90,13 @@ TEST_CASE("Ellipse: create success") {
     REQUIRE(ellipse.GetVerticalRadius() == verticalRadius);
 }
 
-TEST_CASE("Ellipse: draw success") {
+TEST_CASE("CEllipse: draw success") {
     Color color = Color::BLACK;
     Point center(50, 50);
     double horizontalRadius = 30;
     double verticalRadius = 20;
-
-    Ellipse ellipse(color, center, horizontalRadius, verticalRadius);
+    
+    СEllipse ellipse(color, center, horizontalRadius, verticalRadius);
     MockCanvas mockCanvas;
 
     ellipse.Draw(mockCanvas);
@@ -111,13 +107,13 @@ TEST_CASE("Ellipse: draw success") {
     });
 }
 
-TEST_CASE("Triangle: create success") {
+TEST_CASE("CTriangle: create success") {
     Color color = Color::BLACK;
     Point point1(10, 20);
     Point point2(40, 20);
     Point point3(25, 50);
 
-    Triangle triangle(color, point1, point2, point3);
+    СTriangle triangle(color, point1, point2, point3);
 
     REQUIRE(triangle.GetColor() == color);
     AssertEqualPoint(point1, triangle.GetPoint1());
@@ -125,13 +121,13 @@ TEST_CASE("Triangle: create success") {
     AssertEqualPoint(point3, triangle.GetPoint3());
 }
 
-TEST_CASE("Triangle: draw success") {
+TEST_CASE("CTriangle: draw success") {
     Color color = Color::BLACK;
     Point point1(10, 20);
     Point point2(40, 20);
     Point point3(25, 50);
 
-    Triangle triangle(color, point1, point2, point3);
+    СTriangle triangle(color, point1, point2, point3);
     MockCanvas mockCanvas;
 
     triangle.Draw(mockCanvas);
@@ -144,4 +140,3 @@ TEST_CASE("Triangle: draw success") {
     });
 }
 
-// Пример для создания остальных тестов аналогичен, используя методы MockCanvas для проверки вызовов.

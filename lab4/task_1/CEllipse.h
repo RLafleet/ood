@@ -1,4 +1,4 @@
-#ifndef ELLIPSE_H
+﻿#ifndef ELLIPSE_H
 #define ELLIPSE_H
 
 #include <iostream>
@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class Ellipse : public Shape
+class СEllipse : public Shape
 {
 public:
     constexpr static const char* type = "ellipse";
 
-    Ellipse(Color color, Point center, double horizontalRadius, double verticalRadius) :
+    СEllipse(Color color, Point center, double horizontalRadius, double verticalRadius) :
         Shape(color), m_center(center), m_horizontalRadius(horizontalRadius), m_verticalRadius(verticalRadius) {}
 
     void Draw(gfx::ICanvas& canvas) const override

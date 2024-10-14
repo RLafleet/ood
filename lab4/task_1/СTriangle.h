@@ -1,4 +1,4 @@
-#ifndef TRIANGLE_H
+﻿#ifndef TRIANGLE_H
 #define TRIANGLE_H
 
 #include <iostream>
@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class Triangle : public Shape
+class СTriangle : public Shape
 {
 public:
     constexpr static const char* type = "triangle";
 
-    Triangle(Color color, Point point1, Point point2, Point point3) :
+    СTriangle(Color color, Point point1, Point point2, Point point3) :
         Shape(color), m_point1(point1), m_point2(point2), m_point3(point3) {}
 
     void Draw(gfx::ICanvas& canvas) const override

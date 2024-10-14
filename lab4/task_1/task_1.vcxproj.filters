@@ -68,13 +68,13 @@
     <ClInclude Include="Color.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="Ellipse.h">
+    <ClInclude Include="CEllipse.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="Rectangle.h">
+    <ClInclude Include="СRectangle.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.h">
+    <ClInclude Include="СTriangle.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
     <ClInclude Include="Point.h">
