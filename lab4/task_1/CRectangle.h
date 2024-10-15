@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class СRectangle : public Shape
+class CRectangle : public Shape
 {
 public:
     constexpr static const char* type = "rectangle";
 
-    СRectangle(Color color, Point leftTop, double width, double height) :
+    CRectangle(Color color, Point leftTop, double width, double height) :
         Shape(color), m_leftTop(leftTop), m_width(width), m_height(height) {}
 
     void Draw(gfx::ICanvas& canvas) const override

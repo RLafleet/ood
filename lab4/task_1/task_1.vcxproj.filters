@@ -71,10 +71,10 @@
     <ClInclude Include="CEllipse.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="СRectangle.h">
+    <ClInclude Include="CRectangle.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
-    <ClInclude Include="СTriangle.h">
+    <ClInclude Include="CTriangle.h">
       <Filter>Header Files\Shape</Filter>
     </ClInclude>
     <ClInclude Include="Point.h">

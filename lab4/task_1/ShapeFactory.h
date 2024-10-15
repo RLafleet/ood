@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <cctype>
 #include "IShapeFactory.h"
-#include "СTriangle.h"
+#include "CTriangle.h"
 #include "CEllipse.h"
-#include "СRectangle.h"
+#include "CRectangle.h"
 #include "RegularPolygon.h"
 #include <sstream> 
 
@@ -25,7 +25,7 @@ public:
         std::string shapeType;
         iss >> shapeType;
 
-        if (shapeType == СTriangle::type)
+        if (shapeType == CTriangle::type)
         {
             return ShapeFactory::CreateTriangle(color, iss);
         }
@@ -33,11 +33,11 @@ public:
         {
             return ShapeFactory::CreateRegularPolygon(color, iss);
         }
-        else if (shapeType == СRectangle::type)
+        else if (shapeType == CRectangle::type)
         {
             return ShapeFactory::CreateRectangle(color, iss);
         }
-        else if (shapeType == СEllipse::type)
+        else if (shapeType == CEllipse::type)
         {
             return ShapeFactory::CreateEllipse(color, iss);
         }
@@ -53,7 +53,7 @@ private:
         return convertToColor(colorStr);
     }
 
-    static std::unique_ptr<СTriangle> CreateTriangle(Color color, std::istringstream& iss)
+    static std::unique_ptr<CTriangle> CreateTriangle(Color color, std::istringstream& iss)
     {
         std::string x1;
         std::string x2;
@@ -68,10 +68,10 @@ private:
         Point point2(std::stod(x2), std::stod(y2));
         Point point3(std::stod(x3), std::stod(y3));
 
-        return std::make_unique<СTriangle>(color, point1, point2, point3);
+        return std::make_unique<CTriangle>(color, point1, point2, point3);
     }
 
-    static std::unique_ptr<СEllipse> CreateEllipse(Color color, std::istringstream& iss)
+    static std::unique_ptr<CEllipse> CreateEllipse(Color color, std::istringstream& iss)
     {
         std::string x1;
         std::string y1;
@@ -82,7 +82,7 @@ private:
 
         Point center(std::stod(x1), std::stod(y1));
 
-        return std::make_unique<СEllipse>(
+        return std::make_unique<CEllipse>(
             color,
             center,
             std::stod(horizontalRadiusStr),
@@ -90,7 +90,7 @@ private:
         );
     }
 
-    static std::unique_ptr<СRectangle> CreateRectangle(Color color, std::istringstream& iss)
+    static std::unique_ptr<CRectangle> CreateRectangle(Color color, std::istringstream& iss)
     {
         std::string x1;
         std::string y1;
@@ -101,7 +101,7 @@ private:
 
         Point leftTop(std::stod(x1), std::stod(y1));
 
-        return std::make_unique<СRectangle>(
+        return std::make_unique<CRectangle>(
             color,
             leftTop,
             std::stod(width),

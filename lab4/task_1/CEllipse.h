@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class СEllipse : public Shape
+class CEllipse : public Shape
 {
 public:
     constexpr static const char* type = "ellipse";
 
-    СEllipse(Color color, Point center, double horizontalRadius, double verticalRadius) :
+    CEllipse(Color color, Point center, double horizontalRadius, double verticalRadius) :
         Shape(color), m_center(center), m_horizontalRadius(horizontalRadius), m_verticalRadius(verticalRadius) {}
 
     void Draw(gfx::ICanvas& canvas) const override

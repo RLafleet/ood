@@ -151,11 +151,11 @@
     <ClInclude Include="PictureDraft.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RegularPolygon.h" />
-    <ClInclude Include="СRectangle.h" />
+    <ClInclude Include="CRectangle.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeFactory.h" />
     <ClInclude Include="SVGCanvas.h" />
-    <ClInclude Include="СTriangle.h" />
+    <ClInclude Include="CTriangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

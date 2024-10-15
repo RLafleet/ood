@@ -7,12 +7,12 @@
 #include "Color.h"
 #include "Shape.h"
 
-class СTriangle : public Shape
+class CTriangle : public Shape
 {
 public:
     constexpr static const char* type = "triangle";
 
-    СTriangle(Color color, Point point1, Point point2, Point point3) :
+    CTriangle(Color color, Point point1, Point point2, Point point3) :
         Shape(color), m_point1(point1), m_point2(point2), m_point3(point3) {}
 
     void Draw(gfx::ICanvas& canvas) const override
