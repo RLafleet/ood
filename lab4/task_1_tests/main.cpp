@@ -10,6 +10,7 @@
 #include "../task_1/Painter.h"
 #include "../task_1/Client.h"
 #include "../task_1/Point.h"
+#include "../task_1/CDesigner.h"
 
 class MockCanvas : public gfx::ICanvas {
 public:
@@ -140,3 +141,89 @@ TEST_CASE("CTriangle: draw success") {
     });
 }
 
+TEST_CASE("RegularPolygon: create success") {
+    Color color = Color::BLACK;
+    Point center(100, 100);
+    int vertexCount = 5;
+    double radius = 30;
+
+    RegularPolygon polygon(color, center, vertexCount, radius);
+
+    REQUIRE(polygon.GetColor() == color);
+    AssertEqualPoint(center, polygon.GetCenter());
+    REQUIRE(polygon.GetRadius() == radius);
+}
+
+TEST_CASE("RegularPolygon: draw success") {
+    Color color = Color::BLACK;
+    Point center(100, 100);
+    int vertexCount = 5;
+    double radius = 30;
+
+    RegularPolygon polygon(color, center, vertexCount, radius);
+    MockCanvas mockCanvas;
+
+    polygon.Draw(mockCanvas);
+
+    REQUIRE(mockCanvas.actions[0] == "SetColor: " + std::to_string(convertColorToHEX(color)));
+    REQUIRE(mockCanvas.actions.size() == vertexCount + 2);
+}
+
+TEST_CASE("ShapeFactory: create shapes success") {
+    ShapeFactory factory;
+
+    auto rectangle = factory.CreateShape("blue rectangle 10 20 30 40");
+    REQUIRE(dynamic_cast<СRectangle*>(rectangle.get()) != nullptr);
+
+    auto ellipse = factory.CreateShape("red ellipse 50 50 30 20");
+    REQUIRE(dynamic_cast<СEllipse*>(ellipse.get()) != nullptr);
+
+    auto triangle = factory.CreateShape("blue triangle 10 20 40 20 25 50");
+    REQUIRE(dynamic_cast<СTriangle*>(triangle.get()) != nullptr);
+
+    auto polygon = factory.CreateShape("green regularPolygon 100 100 5 30");
+    REQUIRE(dynamic_cast<RegularPolygon*>(polygon.get()) != nullptr);
+}
+
+TEST_CASE("PictureDraft: add shapes and get shapes") {
+    PictureDraft draft;
+    ShapeFactory factory;
+
+    auto rectangle = factory.CreateShape("black rectangle 10 20 30 40");
+    draft.AddShape(std::move(rectangle));
+
+    auto ellipse = factory.CreateShape("red ellipse 50 50 30 20");
+    draft.AddShape(std::move(ellipse));
+}
+
+TEST_CASE("Painter: draw picture success") {
+    MockCanvas mockCanvas;
+    PictureDraft draft;
+    ShapeFactory factory;
+    Painter painter;
+
+    auto rectangle = factory.CreateShape("black rectangle 10 20 30 40");
+    draft.AddShape(std::move(rectangle));
+
+    auto ellipse = factory.CreateShape("red ellipse 50 50 30 20");
+    draft.AddShape(std::move(ellipse));
+
+    painter.DrawPicture(draft, mockCanvas);
+
+    REQUIRE(mockCanvas.actions.size() > 0); 
+}
+
+TEST_CASE("Client: create and paint picture") {
+    MockCanvas mockCanvas;
+    ShapeFactory factory;
+    Painter painter;
+    CDesigner designer(factory);
+    Client client(designer);
+
+    std::stringstream input("black rectangle 10 20 30 40\nred ellipse 50 50 30 20\n");
+    auto draft = designer.CreateDraft(input);
+
+    painter.DrawPicture(draft, mockCanvas);
+
+    REQUIRE(mockCanvas.actions.size() > 0); 
+}

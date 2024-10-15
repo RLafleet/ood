@@ -53,7 +53,6 @@ private:
         return convertToColor(colorStr);
     }
 
-    //Вынести параметры в фаблику
     static std::unique_ptr<СTriangle> CreateTriangle(Color color, std::istringstream& iss)
     {
         std::string x1;
