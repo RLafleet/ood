@@ -1,20 +1,60 @@
-// lab_5.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <fstream>
+#include "Menu.h"
+#include "Document.h"
+#include "CommandHandler.h"
 
-int main()
+const std::string COMMAND_INPUT_ARGS = "cin";
+
+struct Args
 {
-    std::cout << "Hello World!\n";
+    std::string inputFileName;
+};
+
+Args ParseArgs(int argc, char* argv[])
+{
+    if (argc != 2)
+    {
+        throw std::invalid_argument("Invalid arguments count\nUsage: <input_name>");
+    }
+
+    Args args;
+    args.inputFileName = argv[1];
+    return args;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+std::ifstream GetInputFile(const std::string& inputFileName)
+{
+    std::ifstream inputFile(inputFileName);
+    return inputFile;
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+void CheckOpenInputStream(std::ifstream& inputFile)
+{
+    if (!inputFile.is_open())
+    {
+        throw std::runtime_error("Failed to open input stream");
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    try
+    {
+        //Args args = ParseArgs(argc, argv);
+
+        Document document;
+        Menu menu;
+        CommandHandler commandHandler(menu, document);
+
+        menu.Run();
+        menu.Exit();
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
