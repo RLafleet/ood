@@ -23,4 +23,4 @@ public:
 
 inline ICanvas::~ICanvas() {}
 
-#endif //ICANVAS_H
+#endif //ICANVAS_H_
