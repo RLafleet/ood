@@ -10,6 +10,7 @@ class AbstractCommand :
 public:
     void Execute() final;
     void Unexecute() final;
+    void Destroy() final;
 
 protected:
     virtual void DoExecute() = 0;

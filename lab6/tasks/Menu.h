@@ -7,7 +7,6 @@
 #include "ModernGraphicsClassAdapter.h"
 
 // Пространство имен приложения (доступно для модификации)
-
 #pragma once
 namespace app
 {
