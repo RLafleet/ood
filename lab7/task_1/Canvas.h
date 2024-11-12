@@ -213,4 +213,4 @@ private:
 	}
 };
 
-#endif // PNGCANVAS_H
+#endif // PNGCANVAS_H_
