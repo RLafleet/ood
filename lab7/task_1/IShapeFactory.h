@@ -14,4 +14,4 @@ public:
 	virtual ~IShapeFactory() = default;
 };
 
-#endif //ISHAPEFACTORY_H
+#endif //ISHAPEFACTORY_H_

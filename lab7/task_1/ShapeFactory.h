@@ -123,4 +123,4 @@ private:
 	}
 };
 
-#endif //SHAPEFACTORY_H
+#endif //SHAPEFACTORY_H_
