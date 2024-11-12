@@ -18,4 +18,4 @@ public:
 	virtual ~IShapes() = default;
 };
 
-#endif //ISHAPES_H
+#endif //ISHAPES_H_

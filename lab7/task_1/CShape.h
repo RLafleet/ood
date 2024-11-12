@@ -59,4 +59,4 @@ private:
 	std::unique_ptr<IStyle> m_fillStyle;
 };
 
-#endif //CSHAPE_H
+#endif //CSHAPE_H_
