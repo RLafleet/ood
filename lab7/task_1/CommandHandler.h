@@ -245,4 +245,4 @@ private:
 	std::unique_ptr<IShapeFactory> m_factory;
 };
 
-#endif //COMMANDHANDLER_H
+#endif //COMMANDHANDLER_H_
