@@ -8,4 +8,4 @@ class IGroupShape : public IShape, public IShapes
 {
 };
 
-#endif //IGROUPSHAPE_H
+#endif //IGROUPSHAPE_H_

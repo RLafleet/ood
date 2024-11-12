@@ -115,4 +115,4 @@ private:
 	std::unique_ptr<ProxyStyle> m_fillStyleProxy = std::make_unique<ProxyStyle>(false, m_shapes);
 };
 
-#endif //GROUPSHAPE_H
+#endif //GROUPSHAPE_H_
