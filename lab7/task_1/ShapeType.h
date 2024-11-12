@@ -24,4 +24,4 @@ inline std::string ShapeTypeToString(const ShapeType shape)
 	}
 }
 
-#endif //SHAPETYPE_H
+#endif //SHAPETYPE_H_
