@@ -1,7 +1,7 @@
 #ifndef ISHAPE_H
 #define ISHAPE_H
 
-#include "Style/IStyle.h"
+#include "IStyle.h"
 #include "CommonTypes.h"
 #include "IDrawable.h"
 
@@ -23,4 +23,4 @@ public:
 	~IShape() override = default;
 };
 
-#endif //ISHAPE_H
+#endif //ISHAPE_H_
