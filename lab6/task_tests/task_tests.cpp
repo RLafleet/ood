@@ -43,11 +43,14 @@ std::string DrawWithoutAdapter(const std::vector<mgl::CPoint>& points, uint32_t 
             renderer.DrawLine(*it, *first, rgbaColor);
         }
     }
+    renderer.EndDraw();
+
     return strm.str();
 }
 
 void DrawWithAdapter(mgl::CModernGraphicsRenderer& renderer, graphics_lib::ICanvas& adapter, const std::vector<mgl::CPoint>& points, uint32_t color)
 {
+    renderer.BeginDraw();
     adapter.SetColor(color);
 
     auto first = points.begin();
@@ -59,6 +62,8 @@ void DrawWithAdapter(mgl::CModernGraphicsRenderer& renderer, graphics_lib::ICanv
     }
 
     adapter.LineTo((*first).x, (*first).y);
+
+    renderer.EndDraw();
 }
 
 std::string DrawWithObjectAdapter(const std::vector<mgl::CPoint>& points, uint32_t color)
@@ -71,9 +76,10 @@ std::string DrawWithObjectAdapter(const std::vector<mgl::CPoint>& points, uint32
     return strm.str();
 }
 
-void DrawWithClassAdapter(graphics_lib::ICanvas& adapter,
+void DrawWithClassAdapter(app::ModernGraphicsClassAdapter& adapterP, graphics_lib::ICanvas& adapter,
     const std::vector<mgl::CPoint>& points, const uint32_t color)
 {
+    adapterP.BeginDraw();
     adapter.SetColor(color);
 
     const auto first = points.begin();
@@ -85,6 +91,8 @@ void DrawWithClassAdapter(graphics_lib::ICanvas& adapter,
     }
 
     adapter.LineTo(first->x, first->y);
+
+    adapterP.EndDraw();
 }
 
 std::string DrawShapeWithClassAdapter(const std::vector<mgl::CPoint>& points, const uint32_t color)
@@ -92,7 +100,7 @@ std::string DrawShapeWithClassAdapter(const std::vector<mgl::CPoint>& points, co
     std::stringstream strm;
     app::ModernGraphicsClassAdapter adapter(strm);
 
-    DrawWithClassAdapter(adapter, points, color);
+    DrawWithClassAdapter(adapter, adapter, points, color);
 
     return strm.str();
 }
@@ -114,9 +122,6 @@ TEST_CASE("ClassAdapterTest - InterfaceImplementation")
 
     graphics_lib::ICanvas* canvas = dynamic_cast<graphics_lib::ICanvas*>(&adapter);
     REQUIRE(canvas != nullptr);
-
-    mgl::CModernGraphicsRenderer* renderer = static_cast<mgl::CModernGraphicsRenderer*>(&adapter);
-    REQUIRE(renderer != nullptr);
 }
 
 TEST_CASE("ClassAdapterTest - DrawWithClassAdapter")
@@ -149,4 +154,140 @@ TEST_CASE("ObjectAdapterTest - DrawWithObjectAdapter")
     const auto withAdapterShape = DrawWithObjectAdapter(triangle, color);
 
     REQUIRE(originalShape == withAdapterShape);
+}
+
+TEST_CASE("ModernGraphicsAdapter - Initial Position Test with Color") {
+    std::stringstream strm;
+    mgl::CModernGraphicsRenderer renderer(strm);
+    app::ModernGraphicsAdapter adapter(renderer);
+
+    uint32_t color = 0x00000000;  
+    auto rgbaColor = ConvertColorHEXToRGBAColor(color);
+
+    SECTION("Verify initial MoveTo position and color") {
+        renderer.BeginDraw();
+        adapter.SetColor(color);
+        adapter.MoveTo(10, 10);
+        adapter.LineTo(20, 20);
+        renderer.EndDraw();
+
+        std::string expectedOutput =
+            "<draw>\n"
+            "  <line fromX=\"10\" fromY=\"10\" toX=\"20\" toY=\"20\">\n"
+            "    <color r=\"" + std::to_string((int)rgbaColor.red) +
+            "\" g=\"" + std::to_string((int)rgbaColor.green) +
+            "\" b=\"" + std::to_string((int)rgbaColor.blue) +
+            "\" a=\"" + std::to_string((int)rgbaColor.alpha) + "\" />\n"
+            "  </line>\n"
+            "</draw>\n";
+        REQUIRE(strm.str() == expectedOutput);
+    }
+}
+
+TEST_CASE("ModernGraphicsAdapter - MoveTo and LineTo Operations with Color") {
+    std::stringstream strm;
+    mgl::CModernGraphicsRenderer renderer(strm);
+    app::ModernGraphicsAdapter adapter(renderer);
+
+    uint32_t color = 0x00000000;  
+    auto rgbaColor = ConvertColorHEXToRGBAColor(color);
+
+    SECTION("LineTo draws line from current position with correct color") {
+        renderer.BeginDraw();
+        adapter.SetColor(color);
+        adapter.MoveTo(10, 10);
+        adapter.LineTo(20, 20);
+        renderer.EndDraw();
+
+        std::string expectedOutput =
+            "<draw>\n"
+            "  <line fromX=\"10\" fromY=\"10\" toX=\"20\" toY=\"20\">\n"
+            "    <color r=\"" + std::to_string((int)rgbaColor.red) +
+            "\" g=\"" + std::to_string((int)rgbaColor.green) +
+            "\" b=\"" + std::to_string((int)rgbaColor.blue) +
+            "\" a=\"" + std::to_string((int)rgbaColor.alpha) + "\" />\n"
+            "  </line>\n"
+            "</draw>\n";
+        REQUIRE(strm.str() == expectedOutput);
+    }
+}
+
+TEST_CASE("ModernGraphicsAdapter - Initial m_start Value with Color") {
+    std::stringstream strm;
+    mgl::CModernGraphicsRenderer renderer(strm);
+    app::ModernGraphicsAdapter adapter(renderer);
+
+    uint32_t color = 0x00000000;  
+    auto rgbaColor = ConvertColorHEXToRGBAColor(color);
+
+    SECTION("Verify initial m_start is (0,0) and uses correct color") {
+        renderer.BeginDraw();
+        adapter.SetColor(color);
+        adapter.LineTo(15, 15);
+        renderer.EndDraw();
+
+        std::string expectedOutput =
+            "<draw>\n"
+            "  <line fromX=\"0\" fromY=\"0\" toX=\"15\" toY=\"15\">\n"
+            "    <color r=\"" + std::to_string((int)rgbaColor.red) +
+            "\" g=\"" + std::to_string((int)rgbaColor.green) +
+            "\" b=\"" + std::to_string((int)rgbaColor.blue) +
+            "\" a=\"" + std::to_string((int)rgbaColor.alpha) + "\" />\n"
+            "  </line>\n"
+            "</draw>\n";
+        REQUIRE(strm.str() == expectedOutput);
+    }
+}
+
+TEST_CASE("ModernGraphicsClassAdapter - MoveTo and LineTo Operations with Color") {
+    std::stringstream strm;
+    app::ModernGraphicsClassAdapter adapter(strm);
+
+    uint32_t color = 0x00000000;  
+    auto rgbaColor = ConvertColorHEXToRGBAColor(color);
+
+    SECTION("LineTo draws line from current position with correct color") {
+        adapter.BeginDraw();
+        adapter.SetColor(color);
+        adapter.MoveTo(10, 10);
+        adapter.LineTo(20, 20);
+        adapter.EndDraw();
+
+        std::string expectedOutput =
+            "<draw>\n"
+            "  <line fromX=\"10\" fromY=\"10\" toX=\"20\" toY=\"20\">\n"
+            "    <color r=\"" + std::to_string((int)rgbaColor.red) +
+            "\" g=\"" + std::to_string((int)rgbaColor.green) +
+            "\" b=\"" + std::to_string((int)rgbaColor.blue) +
+            "\" a=\"" + std::to_string((int)rgbaColor.alpha) + "\" />\n"
+            "  </line>\n"
+            "</draw>\n";
+        REQUIRE(strm.str() == expectedOutput);
+    }
+}
+
+TEST_CASE("ModernGraphicsClassAdapter - Initial m_start Value with Color") {
+    std::stringstream strm;
+    app::ModernGraphicsClassAdapter adapter(strm);
+
+    uint32_t color = 0x00000000;  
+    auto rgbaColor = ConvertColorHEXToRGBAColor(color);
+
+    SECTION("Verify initial m_start is (0,0) and uses correct color") {
+        adapter.BeginDraw();
+        adapter.SetColor(color);
+        adapter.LineTo(15, 15);
+        adapter.EndDraw();
+
+        std::string expectedOutput =
+            "<draw>\n"
+            "  <line fromX=\"0\" fromY=\"0\" toX=\"15\" toY=\"15\">\n"
+            "    <color r=\"" + std::to_string((int)rgbaColor.red) +
+            "\" g=\"" + std::to_string((int)rgbaColor.green) +
+            "\" b=\"" + std::to_string((int)rgbaColor.blue) +
+            "\" a=\"" + std::to_string((int)rgbaColor.alpha) + "\" />\n"
+            "  </line>\n"
+            "</draw>\n";
+        REQUIRE(strm.str() == expectedOutput);
+    }
 }

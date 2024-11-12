@@ -33,8 +33,12 @@ namespace app
 	{
 		modern_graphics_lib::CModernGraphicsRenderer renderer(std::cout);
 		ModernGraphicsAdapter modernGraphicsAdapter(renderer);
+		
+		renderer.BeginDraw();
+		// добавить начало и конец отрисовки сюда
 		shape_drawing_lib::CCanvasPainter painter(modernGraphicsAdapter);
 		PaintPicture(painter);
+		renderer.EndDraw();
 	}
 
 	void PaintPictureOnModernGraphicsRenderer2()
@@ -42,6 +46,8 @@ namespace app
 		ModernGraphicsClassAdapter modernGraphicsClassAdapter(std::cout);
 		shape_drawing_lib::CCanvasPainter painter(modernGraphicsClassAdapter);
 
+		modernGraphicsClassAdapter.BeginDraw();
 		PaintPicture(painter);
+		modernGraphicsClassAdapter.EndDraw();
 	}
 }	
