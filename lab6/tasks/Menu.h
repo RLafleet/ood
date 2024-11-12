@@ -34,12 +34,7 @@ namespace app
 		modern_graphics_lib::CModernGraphicsRenderer renderer(std::cout);
 		ModernGraphicsAdapter modernGraphicsAdapter(renderer);
 		shape_drawing_lib::CCanvasPainter painter(modernGraphicsAdapter);
-
-		renderer.BeginDraw();
-
 		PaintPicture(painter);
-
-		renderer.EndDraw(); // Имеет ли смысл вызывать внутри адаптера
 	}
 
 	void PaintPictureOnModernGraphicsRenderer2()
@@ -47,10 +42,6 @@ namespace app
 		ModernGraphicsClassAdapter modernGraphicsClassAdapter(std::cout);
 		shape_drawing_lib::CCanvasPainter painter(modernGraphicsClassAdapter);
 
-		modernGraphicsClassAdapter.BeginDraw();
-
 		PaintPicture(painter);
-
-		modernGraphicsClassAdapter.EndDraw();
 	}
-}
+}	

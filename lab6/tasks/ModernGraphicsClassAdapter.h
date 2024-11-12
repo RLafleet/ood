@@ -6,13 +6,19 @@
 
 namespace app
 {
-	class ModernGraphicsClassAdapter : public graphics_lib::ICanvas, public modern_graphics_lib::CModernGraphicsRenderer // Возможно стоит использовтаь private наследование
+	class ModernGraphicsClassAdapter : public graphics_lib::ICanvas, private modern_graphics_lib::CModernGraphicsRenderer
 	{
 	public:
 		explicit ModernGraphicsClassAdapter(std::ostream& strm)
 			: CModernGraphicsRenderer(strm),
 			m_start(0, 0)
 		{
+			CModernGraphicsRenderer::BeginDraw();
+		}
+
+		~ModernGraphicsClassAdapter()
+		{
+			CModernGraphicsRenderer::EndDraw();
 		}
 
 		void SetColor(const uint32_t color) override

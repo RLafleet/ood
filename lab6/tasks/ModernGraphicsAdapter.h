@@ -13,6 +13,12 @@ namespace app
 			modern_graphics_lib::CModernGraphicsRenderer& modernRenderer) : m_start(0, 0),
 			m_renderer(modernRenderer)
 		{
+			m_renderer.BeginDraw();
+		}
+
+		~ModernGraphicsAdapter()
+		{
+			m_renderer.EndDraw();
 		}
 
 		void SetColor(const uint32_t color) override
