@@ -40,4 +40,4 @@ public:
 	}
 };
 
-#endif //CELLIPSE_H
+#endif //CELLIPSE_H_
