@@ -17,4 +17,4 @@ public:
 	virtual ~IStyle() = default;
 };
 
-#endif //ISTYLE_H
+#endif //ISTYLE_H_

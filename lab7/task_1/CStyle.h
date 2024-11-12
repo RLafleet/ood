@@ -30,4 +30,4 @@ private:
 	std::optional<RGBAColor> m_color;
 };
 
-#endif //CSTYLE_H
+#endif //CSTYLE_H_
