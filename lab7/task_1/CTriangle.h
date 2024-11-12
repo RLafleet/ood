@@ -48,4 +48,4 @@ public:
 	}
 };
 
-#endif //CTRIANGLE_H
+#endif //CTRIANGLE_H_
