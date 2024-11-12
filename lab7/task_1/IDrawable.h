@@ -10,4 +10,4 @@ public:
 	virtual ~IDrawable() = default;
 };
 
-#endif //IDRAWABLE_H
+#endif //IDRAWABLE_H_
