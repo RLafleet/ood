@@ -6,7 +6,7 @@
 
 namespace app
 {
-	class ModernGraphicsClassAdapter : public graphics_lib::ICanvas, private modern_graphics_lib::CModernGraphicsRenderer
+	class ModernGraphicsClassAdapter : public graphics_lib::ICanvas, public modern_graphics_lib::CModernGraphicsRenderer
 	{
 	public:
 		explicit ModernGraphicsClassAdapter(std::ostream& strm)
@@ -48,10 +48,10 @@ namespace app
 		static modern_graphics_lib::CRGBAColor ConvertToColor(const uint32_t colorValue)
 		{
 			constexpr float colorScale = 1.0f / 255.0f;
-			const auto red = static_cast<float>((colorValue >> 16) & 0xFF) * colorScale;
-			const auto green = static_cast<float>((colorValue >> 8) & 0xFF) * colorScale;
-			const auto blue = static_cast<float>(colorValue & 0xFF) * colorScale;
-			const auto alpha = static_cast<float>((colorValue >> 24) & 0xFF) * colorScale;
+			const float red = static_cast<float>((colorValue >> 16) & 0xFF) * colorScale;
+			const float green = static_cast<float>((colorValue >> 8) & 0xFF) * colorScale;
+			const float blue = static_cast<float>(colorValue & 0xFF) * colorScale;
+			const float alpha = static_cast<float>((colorValue >> 24) & 0xFF) * colorScale;
 
 			return { red, green, blue, alpha };
 		}
