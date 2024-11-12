@@ -22,4 +22,4 @@ typedef Point<double> PointD;
 typedef Rect<double> RectD;
 typedef uint32_t RGBAColor;
 
-#endif //COMMONTYPES_H
+#endif //COMMONTYPES_H_
