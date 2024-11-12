@@ -20,4 +20,4 @@ public:
 	~ISlide() override = default;
 };
 
-#endif //ISLIDE_H
+#endif //ISLIDE_H_

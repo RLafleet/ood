@@ -104,4 +104,4 @@ private:
 	std::vector<std::shared_ptr<IShape> > m_shapes;
 };
 
-#endif //CSLIDE_H
+#endif //CSLIDE_H_
