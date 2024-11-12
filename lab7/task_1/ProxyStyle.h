@@ -105,4 +105,4 @@ private:
 	std::optional<RGBAColor> m_color;
 };
 
-#endif //PROXYSTYLE_H
+#endif //PROXYSTYLE_H_
