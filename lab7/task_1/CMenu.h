@@ -100,4 +100,4 @@ private:
 	bool m_exit = false;
 };
 
-#endif //CMENU_H
+#endif //CMENU_H_
