@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\IDrawable">
+      <UniqueIdentifier>{50d8cd0e-5dee-43af-9b7c-2dc8a8acbea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Types">
+      <UniqueIdentifier>{ffef8b17-133f-4d1a-858e-11316ff05e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CommandHandler">
+      <UniqueIdentifier>{0b1763ac-4c2a-471a-9269-b799a9c2262f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Slide">
+      <UniqueIdentifier>{1a816f09-c28d-482b-a237-5bb169a98332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ShapeFactory">
+      <UniqueIdentifier>{622a925d-a51a-4422-8598-b3153a4f8a0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shape">
+      <UniqueIdentifier>{413e1a32-7d91-440b-a170-fd91084b02bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shape\Styles">
+      <UniqueIdentifier>{117fc5a2-afc5-4121-ae20-469bad3e08f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Menu">
+      <UniqueIdentifier>{0a0d9820-7853-4035-8908-173fb9b4e422}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Canvas">
+      <UniqueIdentifier>{424fb562-9185-4a93-bea7-7587e9016b98}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="task_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonTypes.h">
+      <Filter>Source Files\Types</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IDrawable.h">
+      <Filter>Header Files\IDrawable</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandler.h">
+      <Filter>Source Files\CommandHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="CSlide.h">
+      <Filter>Header Files\Slide</Filter>
+    </ClInclude>
+    <ClInclude Include="ISlide.h">
+      <Filter>Header Files\Slide</Filter>
+    </ClInclude>
+    <ClInclude Include="IShapeFactory.h">
+      <Filter>Header Files\ShapeFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeFactory.h">
+      <Filter>Header Files\ShapeFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeType.h">
+      <Filter>Header Files\ShapeFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="CEllipse.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="CRectangle.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="CShape.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="CTriangle.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupShape.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="IGroupShape.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="IShape.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="IShapes.h">
+      <Filter>Header Files\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="IStyle.h">
+      <Filter>Header Files\Shape\Styles</Filter>
+    </ClInclude>
+    <ClInclude Include="ProxyStyle.h">
+      <Filter>Header Files\Shape\Styles</Filter>
+    </ClInclude>
+    <ClInclude Include="CStyle.h">
+      <Filter>Header Files\Shape\Styles</Filter>
+    </ClInclude>
+    <ClInclude Include="CMenu.h">
+      <Filter>Header Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Header Files\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="ICanvas.h">
+      <Filter>Header Files\Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_write.h">
+      <Filter>Header Files\Canvas</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
