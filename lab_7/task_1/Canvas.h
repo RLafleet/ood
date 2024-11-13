@@ -9,6 +9,8 @@
 #include <string>
 #include <cmath>
 #include <iomanip>
+#include "corecrt_math_defines.h"
+#include <algorithm>
 
 class Canvas final : public ICanvas
 {
