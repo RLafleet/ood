@@ -1,15 +1,16 @@
-#ifndef GROUPSHAPE_H
+﻿#ifndef GROUPSHAPE_H
 #define GROUPSHAPE_H
 
 #include <limits>
 #include "IGroupShape.h"
-#include "ProxyStyle.h"
+#include "CompositeStyle.h"
 
-class GroupShape final : public IGroupShape
+class GroupShape : public IGroupShape
 {
 public:
 	[[nodiscard]] RectD GetFrame() const override
 	{
+		// не допускать создание пустых групп
 		if (m_shapes.empty())
 		{
 			return { 0, 0, 0, 0 };
@@ -111,8 +112,8 @@ public:
 
 private:
 	std::vector<std::shared_ptr<IShape> > m_shapes;
-	std::unique_ptr<ProxyStyle> m_outlineStyleProxy = std::make_unique<ProxyStyle>(true, m_shapes);
-	std::unique_ptr<ProxyStyle> m_fillStyleProxy = std::make_unique<ProxyStyle>(false, m_shapes);
+	std::unique_ptr<CompositeStyle> m_outlineStyleProxy = std::make_unique<CompositeStyle>(true, m_shapes);
+	std::unique_ptr<CompositeStyle> m_fillStyleProxy = std::make_unique<CompositeStyle>(false, m_shapes);
 };
 
 #endif //GROUPSHAPE_H_

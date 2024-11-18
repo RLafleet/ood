@@ -157,7 +157,7 @@
     <ClInclude Include="IShapes.h" />
     <ClInclude Include="ISlide.h" />
     <ClInclude Include="IStyle.h" />
-    <ClInclude Include="ProxyStyle.h" />
+    <ClInclude Include="CompositeStyle.h" />
     <ClInclude Include="ShapeFactory.h" />
     <ClInclude Include="ShapeType.h" />
     <ClInclude Include="stb_image_write.h" />

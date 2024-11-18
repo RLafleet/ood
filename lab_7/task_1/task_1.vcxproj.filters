@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Canvas">
       <UniqueIdentifier>{424fb562-9185-4a93-bea7-7587e9016b98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\stb">
+      <UniqueIdentifier>{b9d8aef9-b23d-4f94-9f94-5eabb2cedd6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="task_1.cpp">
@@ -98,7 +101,7 @@
     <ClInclude Include="IStyle.h">
       <Filter>Header Files\Shape\Styles</Filter>
     </ClInclude>
-    <ClInclude Include="ProxyStyle.h">
+    <ClInclude Include="CompositeStyle.h">
       <Filter>Header Files\Shape\Styles</Filter>
     </ClInclude>
     <ClInclude Include="CStyle.h">
@@ -114,7 +117,7 @@
       <Filter>Header Files\Canvas</Filter>
     </ClInclude>
     <ClInclude Include="stb_image_write.h">
-      <Filter>Header Files\Canvas</Filter>
+      <Filter>Resource Files\stb</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
