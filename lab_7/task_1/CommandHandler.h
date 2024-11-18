@@ -50,7 +50,8 @@ public:
 			"Renders the current slide onto the canvas.",
 			[&](std::istringstream& params) { Draw(); });
 
-		m_menu.AddItem("GroupShapes",
+		m_menu.AddItem(
+			"GroupShapes",
 			"Usage: GroupShapes <index1> <index2> ... Combines selected shapes into a single group.",
 			[&](std::istringstream& params) { GroupShapes(params); });
 
@@ -67,6 +68,9 @@ public:
 
 	void Run()
 	{
+		std::cout << "==============================\n";
+		std::cout << "           Menu       \n";
+		std::cout << "==============================\n";
 		m_menu.Run();
 	}
 
@@ -165,6 +169,7 @@ private:
 
 	void Draw() const
 	{
+		std::cout << "Draw " << std::endl;
 		m_slide->Draw(*m_canvas);
 	}
 
