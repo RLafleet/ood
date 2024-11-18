@@ -169,7 +169,6 @@ private:
 
 	void Draw() const
 	{
-		std::cout << "Draw " << std::endl;
 		m_slide->Draw(*m_canvas);
 	}
 
