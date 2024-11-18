@@ -1,4 +1,4 @@
-#include "CommandHandler.h"
+﻿#include "CommandHandler.h"
 #include "Canvas.h"
 #include "ShapeFactory.h"
 #include "CSlide.h"
@@ -14,3 +14,6 @@ int main()
 	handler.Run();
 	rawCanvasPtr->SaveToFile("output.png");
 }
+
+// повторить теорию по паттерну компоновщик
+// как понять группа перед тобой или нет
