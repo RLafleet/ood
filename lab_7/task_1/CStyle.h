@@ -2,7 +2,7 @@
 #define CSTYLE_H
 #include "IStyle.h"
 
-class CStyle final : public IStyle
+class CStyle : public IStyle
 {
 public:
 	[[nodiscard]] std::optional<bool> IsEnabled() const override

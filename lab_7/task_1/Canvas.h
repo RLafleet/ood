@@ -12,7 +12,7 @@
 #include "corecrt_math_defines.h"
 #include <algorithm>
 
-class Canvas final : public ICanvas
+class Canvas : public ICanvas
 {
 public:
 	Canvas(const unsigned width, const unsigned height)
@@ -115,7 +115,7 @@ private:
 
 		const auto color = m_lineColor.value();
 
-		if (x >= 0 && x < m_width && y >= 0 && y < m_height)
+		if (x >= 0 && static_cast<size_t>(x) < m_width && y >= 0 && static_cast<size_t>(y) < m_height)
 		{
 			const auto index = 4 * (y * m_width + x);
 			m_pixels[index] = static_cast<uint8_t>((color >> 24) & 0xFF);
@@ -141,7 +141,9 @@ private:
 		{
 			PutPixel(ix1, iy1);
 			if (ix1 == ix2 && iy1 == iy2)
+			{
 				break;
+			}
 			int e2 = 2 * err;
 			if (e2 > -dy)
 			{

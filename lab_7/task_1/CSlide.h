@@ -11,7 +11,7 @@
 #include "IGroupShape.h"
 #include "GroupShape.h"
 
-class CSlide final : public ISlide
+class CSlide : public ISlide
 {
 public:
 	CSlide(const double width, const double height)

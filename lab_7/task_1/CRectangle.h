@@ -4,7 +4,7 @@
 #include "CShape.h"
 #include "ICanvas.h"
 
-class CRectangle final : public CShape
+class CRectangle : public CShape
 {
 public:
 	CRectangle(

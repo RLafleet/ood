@@ -11,7 +11,7 @@
 #include "ShapeType.h"
 #include "CStyle.h"
 
-class ShapeFactory final : public IShapeFactory
+class ShapeFactory : public IShapeFactory
 {
 public:
 	std::unique_ptr<IShape> CreateShape(const std::string& description) override

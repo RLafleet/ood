@@ -4,7 +4,7 @@
 #include "CShape.h"
 #include "ICanvas.h"
 
-class CEllipse final : public CShape
+class CEllipse : public CShape
 {
 public:
 	CEllipse(
