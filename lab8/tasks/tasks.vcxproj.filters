@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\CMenu">
+      <UniqueIdentifier>{1161e08d-16b9-4e97-9140-5dd7ca7eca6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Machine">
+      <UniqueIdentifier>{08cafc02-21e6-4781-af67-c4b6cad9a489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Machine\State">
+      <UniqueIdentifier>{421ae0b6-6eab-4a1c-8a26-d5e8feca3cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MultiMachine">
+      <UniqueIdentifier>{163e060c-0a8b-46c1-a1e0-386a4bb49247}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MultiMachine\State">
+      <UniqueIdentifier>{bac46662-d070-4d84-b089-7ee00f86adc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MultiMachine\Naive">
+      <UniqueIdentifier>{31aa51f3-789a-4dfe-8a19-38964f728954}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tasks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CMenu.h">
+      <Filter>Header Files\CMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="CGumballMachine.h">
+      <Filter>Header Files\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="IGumballMachine.h">
+      <Filter>Header Files\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CHasQuarterState.h">
+      <Filter>Header Files\Machine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CNoQuarterState.h">
+      <Filter>Header Files\Machine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoldOutState.h">
+      <Filter>Header Files\Machine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoldState.h">
+      <Filter>Header Files\Machine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Header Files\Machine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CHasQuarterStateMulti.h">
+      <Filter>Header Files\MultiMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CNoQuarterStateMulti.h">
+      <Filter>Header Files\MultiMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoldOutStateMulti.h">
+      <Filter>Header Files\MultiMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoldStateMulti.h">
+      <Filter>Header Files\MultiMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="IStateMulti.h">
+      <Filter>Header Files\MultiMachine\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CMultiGumballNaiveMachine.h">
+      <Filter>Header Files\MultiMachine\Naive</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMultiGumballMachine.h">
+      <Filter>Header Files\MultiMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="IMultiGumballMachine.h">
+      <Filter>Header Files\MultiMachine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
