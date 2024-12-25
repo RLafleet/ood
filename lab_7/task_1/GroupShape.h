@@ -10,10 +10,10 @@ class GroupShape : public IGroupShape
 public:
 	[[nodiscard]] RectD GetFrame() const override
 	{
-		// не допускать создание пустых групп
+		// не допускать создание пустых групп +
 		if (m_shapes.empty())
 		{
-			return { 0, 0, 0, 0 };
+			throw std::logic_error("Group is empty. A group must contain at least one shape.");
 		}
 
 		double left = std::numeric_limits<double>::max();

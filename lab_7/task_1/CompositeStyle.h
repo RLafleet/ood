@@ -17,12 +17,10 @@ public:
 		if (!m_shapes.empty())
 		{
 			const IStyle& initialStyle = m_isOutline ? m_shapes[0]->GetOutlineStyle() : m_shapes[0]->GetFillStyle();
-			m_enabled = initialStyle.IsEnabled();
-			// убрать enabled
+			// убрать enabled + 
 			m_color = initialStyle.GetColor();
 		}
 	}
-
 	// Style завист от групп фигур. Убрать
 
 	[[nodiscard]] std::optional<bool> IsEnabled() const override
@@ -50,7 +48,6 @@ public:
 
 	void SetIsEnabled(bool enabled) override
 	{
-		m_enabled = enabled;
 		for (const auto& shape : m_shapes)
 		{
 			if (m_isOutline)
@@ -105,7 +102,6 @@ public:
 private:
 	bool m_isOutline;
 	std::vector<std::shared_ptr<IShape> >& m_shapes;
-	std::optional<bool> m_enabled;
 	std::optional<RGBAColor> m_color;
 };
 
