@@ -18,7 +18,6 @@ struct Size
 	}
 };
 
-// Точка передаётся в локальных координатах.
 inline bool IsPointInSize(const Point p, const Size size) noexcept
 {
 	return static_cast<unsigned int>(p.x) < size.width && static_cast<unsigned int>(p.y) < size.height;

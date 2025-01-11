@@ -37,32 +37,27 @@ class CoW
 	};
 
 public:
-	// Конструируем значение по умолчанию.
 	CoW()
 		: m_value(std::make_shared<Value>())
 	{
 	}
 
-	// Создаём значение за счёт перемещения его из value.
 	explicit CoW(Value&& value)
 		: m_value(std::make_shared<Value>(std::move(value)))
 	{
 	}
 
-	// Создаём значение из value.
 	explicit CoW(const Value& value)
 		: m_value(std::make_shared<Value>(value))
 	{
 	}
 
-	// Оператор разыменования служит для чтения значения.
 	const Value& operator*() const noexcept
 	{
 		assert(m_value);
 		return *m_value;
 	}
 
-	// Оператор -> служит для чтения полей и вызова константных методов.
 	const Value* operator->() const noexcept
 	{
 		assert(m_value);
@@ -77,7 +72,6 @@ public:
 		std::forward<ModifierFn>(modify)(*m_value);
 	}
 
-	// Метод Write() нельзя вызвать только у rvalue-ссылок на CoW-объект.
 	WriteProxy Write() && = delete;
 
 	[[nodiscard]] WriteProxy Write()&
@@ -101,8 +95,7 @@ private:
 
 		if (m_value.use_count() > 1)
 		{
-			// Кроме нас на m_value ссылается кто-то ещё, копируем m_value.
-			m_value = std::make_shared<Value>(*m_value);
+			m_value = std::make_share	d<Value>(*m_value);
 		}
 	}
 

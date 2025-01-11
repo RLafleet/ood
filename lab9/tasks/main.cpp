@@ -1,29 +1,49 @@
-#include <iostream>
+﻿#include <iostream>
 #include "Image.h"
 #include "ImageController.h"
 #include "Drawer.h"
 
 void DrawPicture()
 {
-	Image img({ 40, 30 }, 0xFFFFFF);
+    {
+        Image img({ 30, 20 }, '.');
 
-	Drawer::DrawLine(img, { 5, 20 }, { 35, 20 }, 0x00FF00);
-	Drawer::DrawLine(img, { 5, 20 }, { 10, 10 }, 0x00FF00);
-	Drawer::DrawLine(img, { 10, 10 }, { 30, 10 }, 0x00FF00);
-	Drawer::DrawLine(img, { 30, 10 }, { 35, 20 }, 0x00FF00);
-	Drawer::DrawLine(img, { 5, 20 }, { 5, 25 }, 0x00FF00);
-	Drawer::DrawLine(img, { 35, 20 }, { 35, 25 }, 0x00FF00);
-	Drawer::DrawLine(img, { 5, 25 }, { 35, 25 }, 0x000000);
+        Drawer::DrawLine(img, { 15, 18 }, { 15, 12 }, '#');
 
-	Drawer::FillCircle(img, { 12, 26 }, 3, 0x000000);
-	Drawer::FillCircle(img, { 28, 26 }, 3, 0x000000);
-	Drawer::DrawCircle(img, { 12, 26 }, 3, 0xFF8844);
-	Drawer::DrawCircle(img, { 28, 26 }, 3, 0xFF8844);
+        Drawer::DrawCircle(img, { 15, 8 }, 6, '#');
 
-	ImageController::Print(img, std::cout);
-	std::cout << std::endl;
+        Drawer::DrawCircle(img, { 13, 6 }, 1, '0');
+        Drawer::DrawCircle(img, { 17, 7 }, 1, '0');
+        Drawer::DrawCircle(img, { 14, 10 }, 1, '0');
+        Drawer::DrawCircle(img, { 16, 9 }, 1, '0');
 
-	ImageController::SaveImageToPPM(img, "picture.ppm");
+        ImageController::Print(img, std::cout);
+    }
+
+    {
+        Image img({ 30, 20 }, 0xFFFFFF);
+
+        Drawer::DrawLine(img, { 15, 18 }, { 15, 10 }, 0x8B4513);
+
+        Drawer::DrawLine(img, { 8, 10 }, { 22, 10 }, 0x00FF00);
+        Drawer::DrawLine(img, { 8, 10 }, { 15, 1 }, 0x00FF00);
+        Drawer::DrawLine(img, { 22, 10 }, { 15, 1 }, 0x00FF00);
+
+        Drawer::DrawLine(img, { 10, 8 }, { 20, 8 }, 0x00FF00);
+        Drawer::DrawLine(img, { 11, 6 }, { 19, 6 }, 0x00FF00);
+        Drawer::DrawLine(img, { 12, 4 }, { 18, 4 }, 0x00FF00);
+        Drawer::DrawLine(img, { 13, 2 }, { 17, 2 }, 0x00FF00);
+
+        Drawer::DrawLine(img, { 11, 9 }, { 15, 3 }, 0x00FF00);
+        Drawer::DrawLine(img, { 19, 9 }, { 15, 3 }, 0x00FF00);
+
+        Drawer::FillCircle(img, { 12, 7 }, 1, 0xFF0000);
+        Drawer::FillCircle(img, { 18, 8 }, 1, 0xFF0000);
+        Drawer::FillCircle(img, { 13, 9 }, 1, 0xFF0000);
+        Drawer::FillCircle(img, { 17, 6 }, 1, 0xFF0000);
+
+	    ImageController::SaveImageToPPM(img, "picture.ppm");
+    }
 }
 
 void DrawSamplePicture()

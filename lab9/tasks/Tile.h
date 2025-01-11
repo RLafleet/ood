@@ -9,10 +9,8 @@
 class Tile
 {
 public:
-	// Размер тайла 8*8 пикселей.
 	constexpr static int SIZE = 8;
 
-	// Конструктор по умолчанию. Заполняет тайл указанным цветом.
 	explicit Tile(const uint32_t color = 0xFFFFFF) noexcept
 	{
 		for (int y = 0; y < SIZE; ++y)
@@ -23,34 +21,24 @@ public:
 			}
 		}
 
-		// -------------- не удалять ------------
 		assert(m_instanceCount >= 0);
-		++m_instanceCount; // Увеличиваем счётчик тайлов (для целей тестирования).
-		// -------------- не удалять ------------
+		++m_instanceCount; 
 	}
 
 	Tile(const Tile& other)
 	{
-		m_pixels = other.m_pixels; // Копируем пиксели из другого тайла
+		m_pixels = other.m_pixels; 
 
-		// -------------- не удалять ------------
 		assert(m_instanceCount >= 0);
-		++m_instanceCount; // Увеличиваем счётчик тайлов (для целей тестирования).
-		// -------------- не удалять ------------
+		++m_instanceCount; 
 	}
 
 	~Tile()
 	{
-		// -------------- не удалять ------------
-		--m_instanceCount; // Уменьшаем счётчик тайлов.
+		--m_instanceCount; 
 		assert(m_instanceCount >= 0);
-		// -------------- не удалять ------------
 	}
 
-	/**
-	 * Изменяет цвет пикселя тайла.
-	 * Если координаты выходят за пределы тайла, метод ничего не делает.
-	 */
 	void SetPixel(const Point p, const uint32_t color) noexcept
 	{
 		if (IsPointInSize(p, { SIZE, SIZE }))
@@ -59,31 +47,23 @@ public:
 		}
 	}
 
-	/**
-	 * Возвращает цвет пикселя. Если координаты выходят за пределы тайла, возвращается пробел.
-	 */
 	[[nodiscard]] uint32_t GetPixel(const Point p) const noexcept
 	{
 		if (!IsPointInSize(p, { SIZE, SIZE }))
 		{
-			return 0xFFFFFF; // Возвращаем пробел, если координаты выходят за пределы
+			return 0xFFFFFF; 
 		}
 
-		return m_pixels[p.y][p.x]; // Возвращаем цвет пикселя
+		return m_pixels[p.y][p.x]; 
 	}
 
-	// Возвращает количество экземпляра класса Tile в программе.
 	static int GetInstanceCount() noexcept
 	{
-		// -------------- не удалять ------------
 		return m_instanceCount;
-		// -------------- не удалять ------------
 	}
 
 private:
-	// -------------- не удалять ------------
 	inline static int m_instanceCount = 0;
-	// -------------- не удалять ------------
 
 	std::array<std::array<uint32_t, SIZE>, SIZE> m_pixels{};
 };

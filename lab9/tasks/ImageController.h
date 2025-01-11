@@ -22,10 +22,6 @@ public:
 		}
 	}
 
-	/**
-	 * Загружает изображение из pixels. Линии изображения разделяются символами \n.
-	 * Размеры картинки определяются по количеству переводов строки и самой длинной линии.
-	 */
 	static Image LoadImage(const std::string& pixels)
 	{
 		std::istringstream s(pixels);
