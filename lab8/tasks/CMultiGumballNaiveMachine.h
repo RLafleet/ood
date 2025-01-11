@@ -1,4 +1,4 @@
-#ifndef LAB8_GUMNAIVEBALLMACHINE_H
+﻿#ifndef LAB8_GUMNAIVEBALLMACHINE_H
 #define LAB8_GUMNAIVEBALLMACHINE_H
 
 #pragma once
@@ -19,6 +19,8 @@ namespace multiNaive {
         GumballMachine(unsigned count)
             : m_count(count), m_state(count > 0 ? State::NoQuarter : State::SoldOut)
         {}
+
+        // отфарматировать код 
 
         void InsertQuarter() {
             using namespace std;
@@ -158,7 +160,7 @@ Machine is {}
                 --m_count;
                 --m_quarter;
 
-                cout << "A gumball comes rolling out the slot...\n";
+                cout << "Your gumball...\n";
 
                 if (m_count == 0) {
                     cout << "Oops, out of gumballs\n";

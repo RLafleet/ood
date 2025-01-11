@@ -1,4 +1,4 @@
-#ifndef CMULTIGUMBALLMACHINE_H
+﻿#ifndef CMULTIGUMBALLMACHINE_H
 #define CMULTIGUMBALLMACHINE_H
 
 #include <format>
@@ -10,6 +10,7 @@
 
 namespace multi_gumball_machine
 {
+	// какие типы наследования есть в c++ и какой используется в данном случае. Чем различаются
 	class CMultiGumballMachine final : IMultiGumballMachine
 	{
 	public:
@@ -96,12 +97,13 @@ Machine is {}
 
 		void RefillBall(const unsigned numBalls) override
 		{
+			// refill 0, state машины другой и тестами покрыть
 			m_count = numBalls;
 		}
 
 		void ReturnAllQuarters() override
 		{
-			std::cout << "Quarter returned\n";
+			std::cout << m_quarter << " quarter returned to you\n";
 
 			m_quarter = 0;
 		}
