@@ -59,7 +59,7 @@ namespace multi_gumball_machine
 			}
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "sold out";
 		}

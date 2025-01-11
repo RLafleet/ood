@@ -36,7 +36,7 @@ namespace gumball_machine
 			std::cout << "You need to pay first\n";
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "waiting for quarter";
 		}

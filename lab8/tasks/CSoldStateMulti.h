@@ -53,7 +53,7 @@ namespace multi_gumball_machine
 			std::cout << "Cannot refill machine when giving you a gumball\n";
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "delivering a gumball";
 		}

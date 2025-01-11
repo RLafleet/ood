@@ -43,14 +43,18 @@ namespace gumball_machine
 			m_state->Dispense();
 		}
 
-		[[nodiscard]] std::string ToString() const
+		[[nodiscard]] std::string Info() const
 		{
 			return std::format(R"(
-				Mighty Gumball, Inc.
-				C++-enabled Standing Gumball Model #2016 (with state)
-				Inventory: {} gumball{}
-				Machine is {}
-			)", m_count, m_count != 1 ? "s" : "", m_state->ToString());
+------------------------------
+Mighty Gumball, Inc.
+C++-enabled Standing Gumball Model #2016 (with state)
+Machine number #206
+------------------------------
+Inventory: {} gumball{}
+Machine is {}
+------------------------------
+)", m_count, m_count != 1 ? "s" : "", m_state->Info());
 		}
 
 	private:

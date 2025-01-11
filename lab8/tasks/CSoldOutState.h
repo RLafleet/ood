@@ -35,7 +35,7 @@ namespace gumball_machine
 			std::cout << "No gumball dispensed\n";
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "sold out";
 		}

@@ -31,10 +31,10 @@ public:
 		);
 
 		m_menu.AddItem(
-			"ToString",
-			"Usage: ToString",
+			"Info",
+			"Usage: Info",
 			[&](std::istringstream& params) {
-				std::cout << m_multiGumballMachine->ToString() << std::endl;
+				std::cout << m_multiGumballMachine->Info() << std::endl;
 			}
 		);
 

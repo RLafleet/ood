@@ -44,7 +44,7 @@ namespace gumball_machine
 			}
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "delivering a gumball";
 		}

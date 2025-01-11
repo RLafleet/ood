@@ -17,7 +17,7 @@ namespace multi_gumball_machine
 
 		virtual void Refill(unsigned numBalls) = 0;
 
-		[[nodiscard]] virtual std::string ToString() const = 0;
+		[[nodiscard]] virtual std::string Info() const = 0;
 
 		virtual ~IState() = default;
 	};

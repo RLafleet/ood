@@ -59,7 +59,7 @@ namespace multi_gumball_machine
 			m_gumballMachine.RefillBall(numBalls);
 		}
 
-		[[nodiscard]] std::string ToString() const override
+		[[nodiscard]] std::string Info() const override
 		{
 			return "waiting for turn of crank";
 		}

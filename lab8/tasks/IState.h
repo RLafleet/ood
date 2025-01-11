@@ -14,7 +14,7 @@ namespace gumball_machine
 
 		virtual void Dispense() = 0;
 
-		[[nodiscard]] virtual std::string ToString() const = 0;
+		[[nodiscard]] virtual std::string Info() const = 0;
 
 		virtual ~IState() = default;
 	};
