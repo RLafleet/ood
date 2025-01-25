@@ -9,63 +9,70 @@
 class Tile
 {
 public:
+	// Размер тайла 8*8 пикселей.
 	constexpr static int SIZE = 8;
 
-	explicit Tile(const uint32_t color = 0xFFFFFF) noexcept
+	// Конструктор по умолчанию. Заполняет тайл указанным цветом.
+	Tile(char color = ' ') noexcept
 	{
-		for (int y = 0; y < SIZE; ++y)
-		{
-			for (int x = 0; x < SIZE; ++x)
-			{
-				m_pixels[y][x] = color;
-			}
-		}
+		/* Реализуйте недостающий код самостоятельно. */
 
+		// -------------- не удалять ------------
 		assert(m_instanceCount >= 0);
-		++m_instanceCount; 
+		++m_instanceCount; // Увеличиваем счётчик тайлов (для целей тестирования).
+		// -------------- не удалять ------------
 	}
 
 	Tile(const Tile& other)
 	{
-		m_pixels = other.m_pixels; 
+		/* Реализуйте недостающий код самостоятельно. */
 
+		// -------------- не удалять ------------
 		assert(m_instanceCount >= 0);
-		++m_instanceCount; 
+		++m_instanceCount; // Увеличиваем счётчик тайлов (для целей тестирования).
+		// -------------- не удалять ------------
 	}
 
 	~Tile()
 	{
-		--m_instanceCount; 
+		// -------------- не удалять ------------
+		--m_instanceCount; // Уменьшаем счётчик тайлов.
 		assert(m_instanceCount >= 0);
+		// -------------- не удалять ------------
 	}
 
-	void SetPixel(const Point p, const uint32_t color) noexcept
+	/**
+	 * Изменяет цвет пикселя тайла.
+	 * Если координаты выходят за пределы тайла, метод ничего не делает.
+	 */
+	void SetPixel(Point p, char color) noexcept
 	{
-		if (IsPointInSize(p, { SIZE, SIZE }))
-		{
-			m_pixels[p.y][p.x] = color;
-		}
+		/* Реализуйте недостающий код самостоятельно. */
 	}
 
-	[[nodiscard]] uint32_t GetPixel(const Point p) const noexcept
+	/**
+	 * Возвращает цвет пикселя. Если координаты выходят за пределы тайла, возвращается пробел.
+	 */
+	char GetPixel(Point p) const noexcept
 	{
-		if (!IsPointInSize(p, { SIZE, SIZE }))
-		{
-			return 0xFFFFFF; 
-		}
-
-		return m_pixels[p.y][p.x]; 
+		/* Реализуйте недостающий функционал самостоятельно. */
+		return ' ';
 	}
 
+	// Возвращает количество экземпляра класса Tile в программе.
 	static int GetInstanceCount() noexcept
 	{
+		// -------------- не удалять ------------
 		return m_instanceCount;
+		// -------------- не удалять ------------
 	}
 
 private:
+	// -------------- не удалять ------------
 	inline static int m_instanceCount = 0;
+	// -------------- не удалять ------------
 
-	std::array<std::array<uint32_t, SIZE>, SIZE> m_pixels{};
+	/* Разместите здесь поля для хранения пикселей тайла. */
 };
 
 #endif //TILE_H

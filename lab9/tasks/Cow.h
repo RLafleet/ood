@@ -4,67 +4,71 @@
 #include <cassert>
 #include <memory>
 
-template<typename Value>
+template <typename Value>
 class CoW
 {
 	struct WriteProxy
 	{
 		explicit WriteProxy(Value* value) noexcept
-			: m_value_ptr{ value }
+			: value_ptr_{ value }
 		{
 		}
 
 		WriteProxy(const WriteProxy&) = delete;
-
 		WriteProxy& operator=(const WriteProxy&) = delete;
 
 		Value& operator*() const& = delete;
 
 		[[nodiscard]] Value& operator*() const&& noexcept
 		{
-			return *m_value_ptr;
+			return *value_ptr_;
 		}
 
 		Value* operator->() const& = delete;
 
 		Value* operator->() const&& noexcept
 		{
-			return m_value_ptr;
+			return value_ptr_;
 		}
 
 	private:
-		Value* m_value_ptr;
+		Value* value_ptr_;
 	};
 
 public:
+	// Конструируем значение по умолчанию.
 	CoW()
 		: m_value(std::make_shared<Value>())
 	{
 	}
 
-	explicit CoW(Value&& value)
+	// Создаём значение за счёт перемещения его из value.
+	CoW(Value&& value)
 		: m_value(std::make_shared<Value>(std::move(value)))
 	{
 	}
 
-	explicit CoW(const Value& value)
+	// Создаём значение из value.
+	CoW(const Value& value)
 		: m_value(std::make_shared<Value>(value))
 	{
 	}
 
+	// Оператор разыменования служит для чтения значения.
 	const Value& operator*() const noexcept
 	{
 		assert(m_value);
 		return *m_value;
 	}
 
+	// Оператор -> служит для чтения полей и вызова константных методов.
 	const Value* operator->() const noexcept
 	{
 		assert(m_value);
 		return m_value.get();
 	}
 
-	template<typename ModifierFn>
+	template <typename ModifierFn>
 	void Write(ModifierFn&& modify)
 	{
 		EnsureUnique();
@@ -72,8 +76,8 @@ public:
 		std::forward<ModifierFn>(modify)(*m_value);
 	}
 
+	// Метод Write() нельзя вызвать только у rvalue-ссылок на CoW-объект.
 	WriteProxy Write() && = delete;
-
 	[[nodiscard]] WriteProxy Write()&
 	{
 		EnsureUnique();
@@ -83,7 +87,7 @@ public:
 
 	Value& WriteBad()
 	{
-		EnsureUnique();
+		EnsureUnique();	
 
 		return *m_value;
 	}
@@ -95,7 +99,8 @@ private:
 
 		if (m_value.use_count() > 1)
 		{
-			m_value = std::make_share	d<Value>(*m_value);
+			// Кроме нас на m_value ссылается кто-то ещё, копируем m_value.
+			m_value = std::make_shared<Value>(*m_value);
 		}
 	}
 

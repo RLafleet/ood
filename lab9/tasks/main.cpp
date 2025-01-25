@@ -62,6 +62,7 @@ void DrawSamplePicture()
 
 int main()
 {
+    // потворить отношения между классами
 	DrawSamplePicture();
 	DrawPicture();
 	return 0;
