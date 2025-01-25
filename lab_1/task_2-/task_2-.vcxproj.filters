@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Duck">
+      <UniqueIdentifier>{03775a07-7b4c-43ce-941f-6898084b7235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Duck\Dance">
+      <UniqueIdentifier>{a7389e8c-d75a-463f-ac08-70c18268a87f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Duck\Fly">
+      <UniqueIdentifier>{fbedd207-ecc2-442b-ab3a-9a81e0337091}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Duck\Quack">
+      <UniqueIdentifier>{4a395875-7f5c-48b2-aff6-503463ce8ea2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="task_2-.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Duck\DecoyDuck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Duck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\MallardDuck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\ModelDuck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\RedheadDuck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\RubberDuck.h">
+      <Filter>Header Files\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Dance\DanceMinuetBehavior.h">
+      <Filter>Header Files\Duck\Dance</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Dance\DanceNoWay.h">
+      <Filter>Header Files\Duck\Dance</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Dance\DanceWaltzBehavior.h">
+      <Filter>Header Files\Duck\Dance</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Dance\IDanceBehavior.h">
+      <Filter>Header Files\Duck\Dance</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Fly\FlyNoWay.h">
+      <Filter>Header Files\Duck\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Fly\FlyWithWings.h">
+      <Filter>Header Files\Duck\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Fly\IFlyBehavior.h">
+      <Filter>Header Files\Duck\Fly</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Quack\IQuakBehavior.h">
+      <Filter>Header Files\Duck\Quack</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Quack\MuteQuackBehavior.h">
+      <Filter>Header Files\Duck\Quack</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Quack\QuackBehavior.h">
+      <Filter>Header Files\Duck\Quack</Filter>
+    </ClInclude>
+    <ClInclude Include="Duck\Quack\SqueakBehavior.h">
+      <Filter>Header Files\Duck\Quack</Filter>
+    </ClInclude>
+    <ClInclude Include="DuckFunctions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

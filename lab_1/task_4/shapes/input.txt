@@ -1,0 +1,1 @@
+AddShape sh1 #123456 rectangle 10 20 30 40
