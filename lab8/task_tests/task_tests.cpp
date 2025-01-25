@@ -402,12 +402,59 @@ Machine is waiting for quarter
 )");
 }
 
-TEST_F(NaiveMultiGumballMachineTest, InsertQuarter_NoQuarterState) {
+TEST_F(NaiveMultiGumballMachineTest, InsertQuarter_NoQuarterState) 
+{
     gumballMachine.InsertQuarter();
     EXPECT_EQ(testOutput.str(), "You inserted a quarter\n");
 }
 
-// написать тест на проверку количества возращаемых монеток после опустошения
+TEST_F(NaiveMultiGumballMachineTest, ReturnAllQuartersAfterEmptying)
+{
+    gumballMachine.Refill(5);
+    for (int i = 0; i < 5; ++i) {
+        gumballMachine.InsertQuarter();
+    }
+
+    gumballMachine.EjectQuarter();
+
+    std::string expectedOutput = "Added gumball\nYou inserted a quarter\nYou inserted another quarter\nYou inserted another quarter\nYou inserted another quarter\nYou inserted another quarter\nReturn all quarters\n";
+    EXPECT_EQ(testOutput.str(), expectedOutput);
+
+
+    EXPECT_EQ(gumballMachine.Info(), R"(
+------------------------------
+Mighty Gumball, Inc.
+C++-enabled Standing Gumball Model #2016 (with state)
+Machine number #206
+------------------------------
+Inventory: 5 gumballs
+Machine is waiting for quarter
+------------------------------
+)");
+}
+
+TEST_F(NaiveMultiGumballMachineTest, UseAllQuartersAfterEmptying)
+{
+    gumballMachine.Refill(5);
+    for (int i = 0; i < 5; ++i) {
+        gumballMachine.InsertQuarter();
+    }
+
+    for (int i = 0; i < 5; ++i) {
+        gumballMachine.TurnCrank();
+    }
+
+    EXPECT_EQ(gumballMachine.Info(), R"(
+------------------------------
+Mighty Gumball, Inc.
+C++-enabled Standing Gumball Model #2016 (with state)
+Machine number #206
+------------------------------
+Inventory: 0 gumballs
+Machine is sold out
+------------------------------
+)");
+}
 
 TEST_F(NaiveMultiGumballMachineTest, InsertQuarter_TooManyQuarters) {
     std::string expectedString;
@@ -608,9 +655,43 @@ TEST_F(MultiGumballMachine, TurnCrank_NoQuarterState) {
     EXPECT_EQ(testOutput.str(), "You turned but there's no quarter\nYou need to pay first\n");
 }
 
-TEST_F(MultiGumballMachine, Refill_NoQuarterState) {
+TEST_F(MultiGumballMachine, Refill_PositiveNumber) {
     std::string expectedString;
     gumballMachine.Refill(5);
+    expectedString += "Added gumball\n";
+    EXPECT_EQ(testOutput.str(), expectedString);
+}
+
+TEST_F(MultiGumballMachine, Refill_Zero) {
+    std::string expectedString;
+    gumballMachine.Refill(0);
+    expectedString += "Error: Number of balls must be greater than 0.\n";
+    EXPECT_EQ(testOutput.str(), expectedString);
+}
+
+TEST_F(MultiGumballMachine, Refill_LargeNumber) {
+    std::string expectedString;
+    gumballMachine.Refill(1000000);
+    expectedString += "Added gumball\n";
+    EXPECT_EQ(testOutput.str(), expectedString);
+}
+
+TEST_F(MultiGumballMachine, Refill_MultipleCallsPositive) {
+    std::string expectedString;
+    gumballMachine.Refill(3);
+    gumballMachine.Refill(2);
+    expectedString += "Added gumball\n";
+    expectedString += "Added gumball\n";
+    EXPECT_EQ(testOutput.str(), expectedString);
+}
+
+TEST_F(MultiGumballMachine, Refill_MultipleCallsWithZero) {
+    std::string expectedString;
+    gumballMachine.Refill(3);
+    gumballMachine.Refill(0);
+    gumballMachine.Refill(2);
+    expectedString += "Added gumball\n";
+    expectedString += "Error: Number of balls must be greater than 0.\n";
     expectedString += "Added gumball\n";
     EXPECT_EQ(testOutput.str(), expectedString);
 }

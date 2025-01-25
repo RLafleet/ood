@@ -10,7 +10,7 @@
 
 namespace multi_gumball_machine
 {
-	// какие типы наследования есть в c++ и какой используется в данном случае. Чем различаются
+	// Чем различаются наследования в c++
 	class CMultiGumballMachine final : IMultiGumballMachine
 	{
 	public:
@@ -61,8 +61,16 @@ Machine is {}
 
 		void Refill(const unsigned numBalls) const
 		{
-			m_state->Refill(numBalls);
+			if (numBalls > 0)
+			{
+				m_state->Refill(numBalls);
+			}
+			else
+			{
+				std::cout << "Error: Number of balls must be greater than 0." << std::endl;
+			}
 		}
+
 
 	private:
 		[[nodiscard]] unsigned GetBallCount() const override
