@@ -20,11 +20,11 @@ namespace multiNaive {
             : m_count(count), m_state(count > 0 ? State::NoQuarter : State::SoldOut)
         {}
 
-        // отфарматировать код 
 
         void InsertQuarter() {
             using namespace std;
-            if (m_quarter < MAX_QUARTER) {
+            if (m_quarter < MAX_QUARTER) 
+            {
                 switch (m_state) {
                 case State::SoldOut:
                     cout << "You can't insert a quarter, the machine is sold out\n";

@@ -11,6 +11,7 @@
 namespace multi_gumball_machine
 {
 	// Чем различаются наследования в c++
+	// как сделать так, чтобы наследование могло быть приватным в языках не имеющих private
 	class CMultiGumballMachine final : IMultiGumballMachine
 	{
 	public:

@@ -8,5 +8,9 @@ int main()
 	CommandHandler handler(std::move(machine));
 	handler.Run();
 
+	auto machine1 = std::make_unique<multi_gumball_machine::CMultiGumballMachine>(1);
+	multi_gumball_machine::IMultiGumballMachine& m = *machine;
+	m.ReleaseBall();
+
 	return 0;
 }
