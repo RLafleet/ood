@@ -36,7 +36,7 @@ class Bank {
     auto& dstAccount = GetAccount(dst);
 
     if (srcAccount.balance < amount) {
-      throw BankOperationError("Insufficient funds");
+      throw BankOperationError("Insufficient funds at sending");
     }
 
     srcAccount.balance -= amount;
@@ -116,6 +116,12 @@ class Bank {
     ValidateAmountNonNegative(amount);
 
     std::lock_guard<std::mutex> lock(dataMutex);
+
+       if (cash < amount) {
+      throw BankOperationError("Not enough cash in reserve to deposit");
+    }
+
+          cash -= amount;
 
     auto& acc = GetAccount(account);
     acc.balance += amount;

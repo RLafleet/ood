@@ -1,6 +1,6 @@
 ﻿#include "Bank.h"
+#include <conio.h>
 #include <atomic>
-#include <chrono>
 #include <csignal>
 #include <iostream>
 #include <thread>
@@ -9,10 +9,10 @@
 std::atomic<bool> simulation_running(true);
 AccountId marge_account, homer_account, bart_account, lisa_account, apu_account,
     burns_account;
-Money transfer_amount = 100;
-Money electric_payment = 50;
-Money cash_amount = 200;
-Money grocery_amount = 150;
+Money transfer_amount = 60;
+Money electric_payment = 40;
+Money cash_amount = 20;
+Money grocery_amount = 50;
 Money salary_amount = 1000;
 Money cash = 0;
 
@@ -20,30 +20,18 @@ class Character {
  protected:
   Bank& bank;
   AccountId account;
-  std::chrono::milliseconds delay{100};
-  std::chrono::steady_clock::time_point last_output_time;
 
  public:
-  Character(Bank& b, AccountId acc)
-      : bank(b),
-        account(acc),
-        last_output_time(std::chrono::steady_clock::now()) {}
+  Character(Bank& b, AccountId acc) : bank(b), account(acc) {}
   virtual ~Character() = default;
   virtual void run() = 0;
 
-  // Метод для вывода состояния
   void outputStatus(const std::string& name) {
-    auto current_time = std::chrono::steady_clock::now();
-    if (std::chrono::duration_cast<std::chrono::seconds>(current_time -
-                                                         last_output_time)
-            .count() >= 2) {
-      last_output_time = current_time;
-      std::cout << name << " status:" << std::endl;
-      std::cout << "  Account balance: " << bank.GetAccountBalance(account)
-                << std::endl;
-      std::cout << "  Total cash in the bank: " << bank.GetCash() << std::endl;
-      std::cout << std::endl;
-    }
+    std::cout << name << " status:" << std::endl;
+    std::cout << "  Account balance: " << bank.GetAccountBalance(account)
+              << std::endl;
+    std::cout << "  Cash in hand: " << cash << std::endl;
+    std::cout << std::endl;
   }
 };
 
@@ -51,18 +39,12 @@ class Homer : public Character {
  public:
   using Character::Character;
   void run() override {
-    while (simulation_running) {
-      bank.TrySendMoney(account, marge_account, transfer_amount);
-      bank.TrySendMoney(account, burns_account, electric_payment);
-      if (bank.TryWithdrawMoney(account, cash_amount)) {
-        bank.DepositMoney(bart_account,
-                          cash_amount / 2);  // bart needs to be defined
-        bank.DepositMoney(lisa_account,
-                          cash_amount / 2);  // lisa needs to be defined
-      }
-      outputStatus("Homer");  // Выводим статус каждые 2 секунды
-      std::this_thread::sleep_for(delay);
+    bank.TrySendMoney(account, marge_account, transfer_amount);
+    bank.TrySendMoney(account, burns_account, electric_payment);
+    if (bank.TryWithdrawMoney(account, cash_amount)) {
+      cash += cash_amount;
     }
+    outputStatus("Homer");
   }
 };
 
@@ -70,11 +52,23 @@ class Marge : public Character {
  public:
   using Character::Character;
   void run() override {
-    while (simulation_running) {
-      bank.TrySendMoney(account, apu_account, grocery_amount);
-      outputStatus("Marge");  // Выводим статус каждые 2 секунды
-      std::this_thread::sleep_for(delay);
+    bank.TrySendMoney(account, apu_account, grocery_amount);
+    outputStatus("Marge");
+  }
+};
+
+class BartLisa : public Character {
+  Money& cashRef;
+
+ public:
+  BartLisa(Bank& b, AccountId acc, Money& cash)
+      : Character(b, acc), cashRef(cash) {}
+  void run() override {
+    if (cashRef >= 10) {
+      cashRef -= 100;
+      cash += 100;
     }
+    outputStatus("BartLisa");
   }
 };
 
@@ -82,15 +76,12 @@ class Apu : public Character {
  public:
   using Character::Character;
   void run() override {
-    while (simulation_running) {
-      bank.TrySendMoney(account, burns_account, electric_payment);
-      if (cash > 0) {
-        bank.DepositMoney(account, cash);
-        cash = 0;
-      }
-      outputStatus("Apu");  // Выводим статус каждые 2 секунды
-      std::this_thread::sleep_for(delay);
+    bank.TrySendMoney(account, burns_account, electric_payment);
+    if (cash > 0) { //Bart and Lisa bought products
+      bank.DepositMoney(account, cash);
+      cash = 0;
     }
+    outputStatus("Apu");
   }
 };
 
@@ -98,11 +89,8 @@ class Burns : public Character {
  public:
   using Character::Character;
   void run() override {
-    while (simulation_running) {
-      bank.TrySendMoney(account, homer_account, salary_amount);
-      outputStatus("Burns");  // Выводим статус каждые 2 секунды
-      std::this_thread::sleep_for(delay);
-    }
+    bank.TrySendMoney(account, homer_account, salary_amount);
+    outputStatus("Burns");
   }
 };
 
@@ -114,9 +102,9 @@ int main(int argc, char* argv[]) {
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  Bank bank(1000000);
+  bool multithreaded = (argc > 1 && std::string(argv[1]) == "parallel");
+  Bank bank(10000);
 
-  // Open accounts for all characters
   homer_account = bank.OpenAccount();
   marge_account = bank.OpenAccount();
   bart_account = bank.OpenAccount();
@@ -124,32 +112,46 @@ int main(int argc, char* argv[]) {
   apu_account = bank.OpenAccount();
   burns_account = bank.OpenAccount();
 
-  // Create character objects
   Homer homer(bank, homer_account);
   Marge marge(bank, marge_account);
+  BartLisa bartlisa(bank, bart_account, cash);
   Apu apu(bank, apu_account);
   Burns burns(bank, burns_account);
 
-  // Create a thread for each character's run method
-  std::vector<std::thread> threads;
-  threads.emplace_back(&Homer::run, &homer);
-  threads.emplace_back(&Marge::run, &marge);
-  threads.emplace_back(&Apu::run, &apu);
-  threads.emplace_back(&Burns::run, &burns);
+  bank.DepositMoney(homer_account, 1000);
+  bank.DepositMoney(burns_account, 1100);
+  bank.DepositMoney(apu_account, 1700);
 
-  // Join threads
-  for (auto& thread : threads) {
-    thread.join();
+  if (multithreaded) {
+    std::vector<std::thread> threads;
+    threads.emplace_back(&Homer::run, &homer);
+    threads.emplace_back(&Marge::run, &marge);
+    threads.emplace_back(&BartLisa::run, &bartlisa);
+    threads.emplace_back(&Apu::run, &apu);
+    threads.emplace_back(&Burns::run, &burns);
+    for (auto& thread : threads) {
+      thread.join();
+    }
+  } else {
+    while (simulation_running) {
+      std::cout << "Press SPACE to progress simulation, or Q to quit."
+                << std::endl;
+      char key;
+      do {
+        key = _getch();
+      } while (key != ' ' && key != 'q');
+      if (key == 'q')
+        break;
+      homer.run();
+      marge.run();
+      bartlisa.run();
+      apu.run();
+      burns.run();
+    }
   }
 
-  Money totalCash = bank.GetCash() + bank.GetAccountBalance(homer_account) +
-                    bank.GetAccountBalance(marge_account) +
-                    bank.GetAccountBalance(bart_account) +
-                    bank.GetAccountBalance(lisa_account) +
-                    bank.GetAccountBalance(apu_account) +
-                    bank.GetAccountBalance(burns_account);
+  Money totalCash = bank.GetCash();
 
   std::cout << "Total cash in the bank: " << totalCash << std::endl;
-
   return 0;
 }

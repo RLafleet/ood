@@ -23,6 +23,7 @@ TEST_CASE("Bank operations count", "[Bank]") {
   SECTION("Operations count increases after operations") {
     AccountId account1 = bank.OpenAccount();
     AccountId account2 = bank.OpenAccount();
+    bank.DepositMoney(account1, 100);
     bank.SendMoney(account1, account2, 100);
     REQUIRE(bank.GetOperationsCount() > 0);
   }
@@ -40,9 +41,10 @@ TEST_CASE("Open and close account", "[Bank]") {
   SECTION("Close account returns balance and adds to cash") {
     AccountId account = bank.OpenAccount();
     bank.DepositMoney(account, 500);
+    REQUIRE(bank.GetCash() == 500);
     Money balance = bank.CloseAccount(account);
     REQUIRE(balance == 500);
-    REQUIRE(bank.GetCash() == 1500);
+    REQUIRE(bank.GetCash() == 1000);
   }
 
   SECTION("Close non-existent account throws BankOperationError") {
@@ -112,7 +114,7 @@ TEST_CASE("Withdraw money", "[Bank]") {
   SECTION("Withdraw money from account") {
     bank.WithdrawMoney(account, 300);
     REQUIRE(bank.GetAccountBalance(account) == 200);
-    REQUIRE(bank.GetCash() == 1300);
+    REQUIRE(bank.GetCash() == 800);
   }
 
   SECTION("Withdraw more money than available throws BankOperationError") {
@@ -136,11 +138,12 @@ TEST_CASE("Try withdraw money", "[Bank]") {
   SECTION("Try withdraw money from account") {
     REQUIRE(bank.TryWithdrawMoney(account, 300) == true);
     REQUIRE(bank.GetAccountBalance(account) == 200);
-    REQUIRE(bank.GetCash() == 1300);
+    REQUIRE(bank.GetCash() == 800);
   }
 
   SECTION("Try withdraw more money than available returns false") {
     REQUIRE(bank.TryWithdrawMoney(account, 600) == false);
+    REQUIRE(bank.GetCash() == 500);
   }
 
   SECTION("Try withdraw negative amount throws std::out_of_range") {
@@ -159,12 +162,14 @@ TEST_CASE("Deposit money", "[Bank]") {
   SECTION("Deposit money to account") {
     bank.DepositMoney(account, 300);
     REQUIRE(bank.GetAccountBalance(account) == 300);
+    REQUIRE(bank.GetCash() == 700);
+    REQUIRE(bank.TryWithdrawMoney(account, 300) == true);
     REQUIRE(bank.GetCash() == 1000);
   }
 
   SECTION(
       "Deposit more money than available in cash throws BankOperationError") {
-    REQUIRE_THROWS_AS(bank.DepositMoney(account, 1100), BankOperationError);
+    REQUIRE_THROWS_AS(bank.DepositMoney(account, 10100), BankOperationError);
   }
 
   SECTION("Deposit negative amount throws std::out_of_range") {
