@@ -6,36 +6,43 @@
 using AccountId = unsigned long long;
 using Money = long long;
 
-class BankOperationError : public std::runtime_error {
- public:
+class BankOperationError : public std::runtime_error
+{
+public:
   using std::runtime_error::runtime_error;
 };
 
-class Bank {
- public:
-  explicit Bank(Money initialCash) : cash(initialCash) {
-    if (initialCash < 0) {
+class Bank
+{
+public:
+  explicit Bank(Money initialCash) : cash(initialCash)
+  {
+    if (initialCash < 0)
+    {
       throw BankOperationError("Negative initial cash");
     }
   }
 
-  Bank(const Bank&) = delete;
-  Bank& operator=(const Bank&) = delete;
+  Bank(const Bank &) = delete;
+  Bank &operator=(const Bank &) = delete;
 
-  unsigned long long GetOperationsCount() const {
+  unsigned long long GetOperationsCount() const
+  {
     return operationsCount.load();
   }
 
-  void SendMoney(AccountId src, AccountId dst, Money amount) {
+  void SendMoney(AccountId src, AccountId dst, Money amount)
+  {
     IncrementOperationCount();
     ValidateAmountNonNegative(amount);
 
     std::lock_guard<std::mutex> lock(dataMutex);
 
-    auto& srcAccount = GetAccount(src);
-    auto& dstAccount = GetAccount(dst);
+    auto &srcAccount = GetAccount(src);
+    auto &dstAccount = GetAccount(dst);
 
-    if (srcAccount.balance < amount) {
+    if (srcAccount.balance < amount)
+    {
       throw BankOperationError("Insufficient funds at sending");
     }
 
@@ -43,7 +50,8 @@ class Bank {
     dstAccount.balance += amount;
   }
 
-  bool TrySendMoney(AccountId src, AccountId dst, Money amount) {
+  bool TrySendMoney(AccountId src, AccountId dst, Money amount)
+  {
     IncrementOperationCount();
     ValidateAmountNonNegative(amount);
 
@@ -51,11 +59,13 @@ class Bank {
 
     auto srcIt = accounts.find(src);
     auto dstIt = accounts.find(dst);
-    if (srcIt == accounts.end() || dstIt == accounts.end()) {
+    if (srcIt == accounts.end() || dstIt == accounts.end())
+    {
       throw BankOperationError("Account not found");
     }
 
-    if (srcIt->second.balance < amount) {
+    if (srcIt->second.balance < amount)
+    {
       return false;
     }
 
@@ -64,26 +74,30 @@ class Bank {
     return true;
   }
 
-  Money GetCash() const {
+  Money GetCash() const
+  {
     IncrementOperationCount();
     std::lock_guard<std::mutex> lock(dataMutex);
     return cash;
   }
 
-  Money GetAccountBalance(AccountId account) const {
+  Money GetAccountBalance(AccountId account) const
+  {
     IncrementOperationCount();
     std::lock_guard<std::mutex> lock(dataMutex);
     return GetAccount(account).balance;
   }
 
-  void WithdrawMoney(AccountId account, Money amount) {
+  void WithdrawMoney(AccountId account, Money amount)
+  {
     IncrementOperationCount();
     ValidateAmountNonNegative(amount);
 
     std::lock_guard<std::mutex> lock(dataMutex);
 
-    auto& acc = GetAccount(account);
-    if (acc.balance < amount) {
+    auto &acc = GetAccount(account);
+    if (acc.balance < amount)
+    {
       throw BankOperationError("Insufficient funds");
     }
 
@@ -91,18 +105,21 @@ class Bank {
     cash += amount;
   }
 
-  bool TryWithdrawMoney(AccountId account, Money amount) {
+  bool TryWithdrawMoney(AccountId account, Money amount)
+  {
     IncrementOperationCount();
     ValidateAmountNonNegative(amount);
 
     std::lock_guard<std::mutex> lock(dataMutex);
 
     auto it = accounts.find(account);
-    if (it == accounts.end()) {
+    if (it == accounts.end())
+    {
       throw BankOperationError("Account not found");
     }
 
-    if (it->second.balance < amount) {
+    if (it->second.balance < amount)
+    {
       return false;
     }
 
@@ -111,23 +128,26 @@ class Bank {
     return true;
   }
 
-  void DepositMoney(AccountId account, Money amount) {
+  void DepositMoney(AccountId account, Money amount)
+  {
     IncrementOperationCount();
     ValidateAmountNonNegative(amount);
 
     std::lock_guard<std::mutex> lock(dataMutex);
 
-       if (cash < amount) {
+    if (cash < amount)
+    {
       throw BankOperationError("Not enough cash in reserve to deposit");
     }
 
-          cash -= amount;
+    cash -= amount;
 
-    auto& acc = GetAccount(account);
+    auto &acc = GetAccount(account);
     acc.balance += amount;
   }
 
-  AccountId OpenAccount() {
+  AccountId OpenAccount()
+  {
     IncrementOperationCount();
     std::lock_guard<std::mutex> lock(dataMutex);
     AccountId newId = nextAccountId++;
@@ -135,12 +155,14 @@ class Bank {
     return newId;
   }
 
-  Money CloseAccount(AccountId account) {
+  Money CloseAccount(AccountId account)
+  {
     IncrementOperationCount();
     std::lock_guard<std::mutex> lock(dataMutex);
 
     auto it = accounts.find(account);
-    if (it == accounts.end()) {
+    if (it == accounts.end())
+    {
       throw BankOperationError("Account not found");
     }
 
@@ -150,8 +172,9 @@ class Bank {
     return balance;
   }
 
- private:
-  struct AccountInfo {
+private:
+  struct AccountInfo
+  {
     Money balance = 0;
   };
 
@@ -161,27 +184,34 @@ class Bank {
   AccountId nextAccountId = 1;
   mutable std::atomic<unsigned long long> operationsCount{0};
 
-  void IncrementOperationCount() const {
+  void IncrementOperationCount() const
+  {
     operationsCount.fetch_add(1, std::memory_order_relaxed);
   }
 
-  void ValidateAmountNonNegative(Money amount) const {
-    if (amount < 0) {
+  void ValidateAmountNonNegative(Money amount) const
+  {
+    if (amount < 0)
+    {
       throw std::out_of_range("Negative amount");
     }
   }
 
-  AccountInfo& GetAccount(AccountId account) {
+  AccountInfo &GetAccount(AccountId account)
+  {
     auto it = accounts.find(account);
-    if (it == accounts.end()) {
+    if (it == accounts.end())
+    {
       throw BankOperationError("Account not found");
     }
     return it->second;
   }
 
-  const AccountInfo& GetAccount(AccountId account) const {
+  const AccountInfo &GetAccount(AccountId account) const
+  {
     auto it = accounts.find(account);
-    if (it == accounts.end()) {
+    if (it == accounts.end())
+    {
       throw BankOperationError("Account not found");
     }
     return it->second;

@@ -30,6 +30,7 @@ class Character {
     std::cout << name << " status:" << std::endl;
     std::cout << "  Account balance: " << bank.GetAccountBalance(account)
               << std::endl;
+    std::cout << "  Total cash in the bank: " << bank.GetCash() << std::endl;
     std::cout << "  Cash in hand: " << cash << std::endl;
     std::cout << std::endl;
   }
@@ -150,7 +151,12 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  Money totalCash = bank.GetCash();
+  Money totalCash = bank.GetCash() + bank.GetAccountBalance(homer_account) +
+                    bank.GetAccountBalance(marge_account) +
+                    bank.GetAccountBalance(bart_account) +
+                    bank.GetAccountBalance(lisa_account) +
+                    bank.GetAccountBalance(apu_account) +
+                    bank.GetAccountBalance(burns_account); 
 
   std::cout << "Total cash in the bank: " << totalCash << std::endl;
   return 0;
