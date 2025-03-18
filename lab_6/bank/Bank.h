@@ -15,6 +15,8 @@ public:
 class Bank
 {
 public:
+  static constexpr AccountId INVALID_ACCOUNT = -1;
+
   explicit Bank(Money initialCash) : cash(initialCash)
   {
     if (initialCash < 0)
