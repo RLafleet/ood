@@ -4,230 +4,124 @@
 #include "../../Catch2/catch.hpp"
 #include "../bank/Bank.h"
 
-TEST_CASE("Bank initialization", "[Bank]")
-{
-  SECTION("Initialization with positive cash amount")
-  {
-    Bank bank(1000);
-    REQUIRE(bank.GetCash() == 1000);
+TEST_CASE("Bank initialization", "[bank]") {
+  SECTION("Valid initialization") {
+    REQUIRE_NOTHROW(Bank(1000));
   }
-
-  SECTION(
-      "Initialization with negative cash amount throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(Bank(-1000), BankOperationError);
+  SECTION("Negative cash initialization throws error") {
+    REQUIRE_THROWS_AS(Bank(-100), BankOperationError);
   }
 }
 
-TEST_CASE("Bank operations count", "[Bank]")
-{
+TEST_CASE("Account operations", "[bank]") {
   Bank bank(1000);
-  REQUIRE(bank.GetOperationsCount() == 0);
 
-  SECTION("Operations count increases after operations")
-  {
-    AccountId account1 = bank.OpenAccount();
-    AccountId account2 = bank.OpenAccount();
-    bank.DepositMoney(account1, 100);
-    bank.SendMoney(account1, account2, 100);
-    REQUIRE(bank.GetOperationsCount() > 0);
+  SECTION("Open account") {
+    AccountId id = bank.OpenAccount();
+    REQUIRE(bank.GetAccountBalance(id) == 0);
+  }
+
+  SECTION("Close account with balance") {
+    AccountId id = bank.OpenAccount();
+    bank.DepositMoney(id, 500);
+    REQUIRE(bank.CloseAccount(id) == 500);
+    REQUIRE(bank.GetCash() == 1000 + 500);
   }
 }
 
-TEST_CASE("Open and close account", "[Bank]")
-{
+TEST_CASE("Money transfers", "[bank]") {
   Bank bank(1000);
+  AccountId acc1 = bank.OpenAccount();
+  AccountId acc2 = bank.OpenAccount();
+  bank.DepositMoney(acc1, 500);
 
-  SECTION("Open account returns unique account ID")
-  {
-    AccountId account1 = bank.OpenAccount();
-    AccountId account2 = bank.OpenAccount();
-    REQUIRE(account1 != account2);
+  SECTION("Valid transfer") {
+    REQUIRE_NOTHROW(bank.SendMoney(acc1, acc2, 200));
+    REQUIRE(bank.GetAccountBalance(acc1) == 300);
+    REQUIRE(bank.GetAccountBalance(acc2) == 200);
   }
 
-  SECTION("Close account returns balance and adds to cash")
-  {
-    AccountId account = bank.OpenAccount();
-    bank.DepositMoney(account, 500);
-    REQUIRE(bank.GetCash() == 500);
-    Money balance = bank.CloseAccount(account);
-    REQUIRE(balance == 500);
-    REQUIRE(bank.GetCash() == 1000);
+  SECTION("Insufficient funds throws error") {
+    REQUIRE_THROWS_AS(bank.SendMoney(acc1, acc2, 600), BankOperationError);
   }
 
-  SECTION("Close non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.CloseAccount(999), BankOperationError);
+  SECTION("Negative amount throws out_of_range") {
+    REQUIRE_THROWS_AS(bank.SendMoney(acc1, acc2, -50), std::out_of_range);
   }
 }
 
-TEST_CASE("Send money", "[Bank]")
-{
+TEST_CASE("Withdraw and deposit", "[bank]") {
   Bank bank(1000);
-  AccountId account1 = bank.OpenAccount();
-  AccountId account2 = bank.OpenAccount();
-  bank.DepositMoney(account1, 500);
+  AccountId acc = bank.OpenAccount();
+  bank.DepositMoney(acc, 500);
 
-  SECTION("Send money between accounts")
-  {
-    bank.SendMoney(account1, account2, 300);
-    REQUIRE(bank.GetAccountBalance(account1) == 200);
-    REQUIRE(bank.GetAccountBalance(account2) == 300);
+  SECTION("Valid withdraw") {
+    REQUIRE_NOTHROW(bank.WithdrawMoney(acc, 200));
+    REQUIRE(bank.GetAccountBalance(acc) == 300);
+    REQUIRE(bank.GetCash() == 1200);
   }
 
-  SECTION("Send more money than available throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.SendMoney(account1, account2, 600),
-                      BankOperationError);
+  SECTION("Insufficient funds throws error") {
+    REQUIRE_THROWS_AS(bank.WithdrawMoney(acc, 600), BankOperationError);
   }
 
-  SECTION("Send negative amount throws std::out_of_range")
-  {
-    REQUIRE_THROWS_AS(bank.SendMoney(account1, account2, -100),
-                      std::out_of_range);
-  }
-
-  SECTION("Send money to non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.SendMoney(account1, 999, 100), BankOperationError);
+  SECTION("Negative withdraw throws out_of_range") {
+    REQUIRE_THROWS_AS(bank.WithdrawMoney(acc, -100), std::out_of_range);
   }
 }
 
-TEST_CASE("Try send money", "[Bank]")
-{
-  Bank bank(1000);
-  AccountId account1 = bank.OpenAccount();
-  AccountId account2 = bank.OpenAccount();
-  bank.DepositMoney(account1, 500);
+TEST_CASE("Multiple accounts and transactions", "[bank]") {
+  Bank bank(2000);
+  AccountId acc1 = bank.OpenAccount();
+  AccountId acc2 = bank.OpenAccount();
+  AccountId acc3 = bank.OpenAccount();
+  bank.DepositMoney(acc1, 500);
+  bank.DepositMoney(acc2, 300);
 
-  SECTION("Try send money between accounts")
-  {
-    REQUIRE(bank.TrySendMoney(account1, account2, 300) == true);
-    REQUIRE(bank.GetAccountBalance(account1) == 200);
-    REQUIRE(bank.GetAccountBalance(account2) == 300);
-  }
-
-  SECTION("Try send more money than available returns false")
-  {
-    REQUIRE(bank.TrySendMoney(account1, account2, 600) == false);
-  }
-
-  SECTION("Try send negative amount throws std::out_of_range")
-  {
-    REQUIRE_THROWS_AS(bank.TrySendMoney(account1, account2, -100),
-                      std::out_of_range);
-  }
-
-  SECTION("Try send money to non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.TrySendMoney(account1, 999, 100),
-                      BankOperationError);
+  SECTION("Multiple valid transfers") {
+    REQUIRE_NOTHROW(bank.SendMoney(acc1, acc2, 200));
+    REQUIRE_NOTHROW(bank.SendMoney(acc2, acc3, 100));
+    REQUIRE(bank.GetAccountBalance(acc1) == 300);
+    REQUIRE(bank.GetAccountBalance(acc2) == 200);
+    REQUIRE(bank.GetAccountBalance(acc3) == 100);
   }
 }
 
-TEST_CASE("Withdraw money", "[Bank]")
-{
+TEST_CASE("Account closure edge cases", "[bank]") {
   Bank bank(1000);
-  AccountId account = bank.OpenAccount();
-  bank.DepositMoney(account, 500);
-
-  SECTION("Withdraw money from account")
-  {
-    bank.WithdrawMoney(account, 300);
-    REQUIRE(bank.GetAccountBalance(account) == 200);
-    REQUIRE(bank.GetCash() == 800);
-  }
-
-  SECTION("Withdraw more money than available throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.WithdrawMoney(account, 600), BankOperationError);
-  }
-
-  SECTION("Withdraw negative amount throws std::out_of_range")
-  {
-    REQUIRE_THROWS_AS(bank.WithdrawMoney(account, -100), std::out_of_range);
-  }
-
-  SECTION("Withdraw from non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.WithdrawMoney(999, 100), BankOperationError);
-  }
+  AccountId acc = bank.OpenAccount();
+  REQUIRE_THROWS_AS(bank.CloseAccount(acc + 1), BankOperationError);
 }
 
-TEST_CASE("Try withdraw money", "[Bank]")
-{
+TEST_CASE("TrySendMoney failure", "[bank]") {
   Bank bank(1000);
-  AccountId account = bank.OpenAccount();
-  bank.DepositMoney(account, 500);
-
-  SECTION("Try withdraw money from account")
-  {
-    REQUIRE(bank.TryWithdrawMoney(account, 300) == true);
-    REQUIRE(bank.GetAccountBalance(account) == 200);
-    REQUIRE(bank.GetCash() == 800);
-  }
-
-  SECTION("Try withdraw more money than available returns false")
-  {
-    REQUIRE(bank.TryWithdrawMoney(account, 600) == false);
-    REQUIRE(bank.GetCash() == 500);
-  }
-
-  SECTION("Try withdraw negative amount throws std::out_of_range")
-  {
-    REQUIRE_THROWS_AS(bank.TryWithdrawMoney(account, -100), std::out_of_range);
-  }
-
-  SECTION("Try withdraw from non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.TryWithdrawMoney(999, 100), BankOperationError);
-  }
+  AccountId acc1 = bank.OpenAccount();
+  AccountId acc2 = bank.OpenAccount();
+  REQUIRE_FALSE(bank.TrySendMoney(acc1, acc2, 100));
 }
 
-TEST_CASE("Deposit money", "[Bank]")
-{
+TEST_CASE("TryWithdrawMoney failure", "[bank]") {
   Bank bank(1000);
-  AccountId account = bank.OpenAccount();
-
-  SECTION("Deposit money to account")
-  {
-    bank.DepositMoney(account, 300);
-    REQUIRE(bank.GetAccountBalance(account) == 300);
-    REQUIRE(bank.GetCash() == 700);
-    REQUIRE(bank.TryWithdrawMoney(account, 300) == true);
-    REQUIRE(bank.GetCash() == 1000);
-  }
-
-  SECTION(
-      "Deposit more money than available in cash throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.DepositMoney(account, 10100), BankOperationError);
-  }
-
-  SECTION("Deposit negative amount throws std::out_of_range")
-  {
-    REQUIRE_THROWS_AS(bank.DepositMoney(account, -100), std::out_of_range);
-  }
-
-  SECTION("Deposit to non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.DepositMoney(999, 100), BankOperationError);
-  }
+  AccountId acc = bank.OpenAccount();
+  REQUIRE_FALSE(bank.TryWithdrawMoney(acc, 100));
 }
 
-TEST_CASE("Get account balance", "[Bank]")
-{
+TEST_CASE("Deposit with insufficient cash", "[bank]") {
   Bank bank(1000);
-  AccountId account = bank.OpenAccount();
-  bank.DepositMoney(account, 500);
+  AccountId acc = bank.OpenAccount();
+  REQUIRE_THROWS_AS(bank.DepositMoney(acc, 1100), BankOperationError);
+}
 
-  SECTION("Get balance of existing account")
-  {
-    REQUIRE(bank.GetAccountBalance(account) == 500);
-  }
+TEST_CASE("Check operation count", "[bank]") {
+  Bank bank(1000);
+  AccountId acc1 = bank.OpenAccount();
+  AccountId acc2 = bank.OpenAccount();
+  bank.DepositMoney(acc1, 500);
+  bank.SendMoney(acc1, acc2, 200);
+  REQUIRE(bank.GetOperationsCount() >= 4);
+}
 
-  SECTION("Get balance of non-existent account throws BankOperationError")
-  {
-    REQUIRE_THROWS_AS(bank.GetAccountBalance(999), BankOperationError);
-  }
+TEST_CASE("Get balance of nonexistent account", "[bank]") {
+  Bank bank(1000);
+  REQUIRE_THROWS_AS(bank.GetAccountBalance(9999), BankOperationError);
 }

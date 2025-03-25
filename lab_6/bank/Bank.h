@@ -1,221 +1,264 @@
-﻿#include <atomic>
+﻿#pragma once
+#include <atomic>
 #include <mutex>
+#include <shared_mutex>
 #include <stdexcept>
 #include <unordered_map>
 
 using AccountId = unsigned long long;
 using Money = long long;
 
-class BankOperationError : public std::runtime_error
+class BankOperationError final : std::runtime_error
 {
 public:
-  using std::runtime_error::runtime_error;
+  using runtime_error::runtime_error;
 };
 
 class Bank
 {
 public:
-  static constexpr AccountId INVALID_ACCOUNT = -1;
-
-  explicit Bank(Money initialCash) : cash(initialCash)
+  // Инициализирует монетарную систему. cash — количество денег в наличном
+  // обороте При отрицательном количестве денег, выбрасывается
+  // BankOperationError
+  explicit Bank(Money cash) : m_cash(cash)
   {
-    if (initialCash < 0)
+    if (m_cash < 0)
     {
-      throw BankOperationError("Negative initial cash");
+      throw BankOperationError("initial cash cannot be negative");
     }
   }
 
   Bank(const Bank &) = delete;
   Bank &operator=(const Bank &) = delete;
 
-  unsigned long long GetOperationsCount() const
+  // Возвращает количество операций, выполненных банком (включая операции чтения
+  // состояния) Для неблокирующего подсчёта операций используйте класс
+  // std::atomic<unsigned long long> Вызов метода GetOperationsCount() не должен
+  // участвовать в подсчёте
+  [[nodiscard]] unsigned long long GetOperationsCount() const
   {
-    return operationsCount.load();
+    return m_operationsCount.load();
   }
 
-  void SendMoney(AccountId src, AccountId dst, Money amount)
+  // Перевести деньги с исходного счёта (srcAccountId) на целевой (dstAccountId)
+  // Нельзя перевести больше, чем есть на исходном счёте
+  // Нельзя перевести отрицательное количество денег
+  // Исключение BankOperationError выбрасывается, при отсутствии счетов или
+  // недостатке денег на исходном счёте
+  // При отрицательном количестве переводимых денег выбрасывается
+  // std::out_of_range
+  void SendMoney(AccountId srcAccountId, AccountId dstAccountId, Money amount)
   {
-    IncrementOperationCount();
-    ValidateAmountNonNegative(amount);
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-
-    auto &srcAccount = GetAccount(src);
-    auto &dstAccount = GetAccount(dst);
-
-    if (srcAccount.balance < amount)
-    {
-      throw BankOperationError("Insufficient funds at sending");
-    }
-
-    srcAccount.balance -= amount;
-    dstAccount.balance += amount;
+    SendMoneyInternal(srcAccountId, dstAccountId, amount, true);
   }
 
-  bool TrySendMoney(AccountId src, AccountId dst, Money amount)
+  // Перевести деньги с исходного счёта (srcAccountId) на целевой (dstAccountId)
+  // Нельзя перевести больше, чем есть на исходном счёте
+  // Нельзя перевести отрицательное количество денег
+  // При нехватке денег на исходном счёте возвращается false
+  // Если номера счетов невалидны, выбрасывается BankOperationError
+  // При отрицательном количестве денег выбрасывается std::out_of_range
+  [[nodiscard]] bool TrySendMoney(AccountId srcAccountId,
+                                  AccountId dstAccountId,
+                                  Money amount)
   {
-    IncrementOperationCount();
-    ValidateAmountNonNegative(amount);
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-
-    auto srcIt = accounts.find(src);
-    auto dstIt = accounts.find(dst);
-    if (srcIt == accounts.end() || dstIt == accounts.end())
-    {
-      throw BankOperationError("Account not found");
-    }
-
-    if (srcIt->second.balance < amount)
-    {
-      return false;
-    }
-
-    srcIt->second.balance -= amount;
-    dstIt->second.balance += amount;
-    return true;
+    return SendMoneyInternal(srcAccountId, dstAccountId, amount, false);
   }
 
-  Money GetCash() const
+  // Возвращает количество наличных денег в обороте
+  [[nodiscard]] Money GetCash() const
   {
-    IncrementOperationCount();
-    std::lock_guard<std::mutex> lock(dataMutex);
-    return cash;
+    std::shared_lock lock(m_cashMutex);
+    return m_cash;
   }
 
-  Money GetAccountBalance(AccountId account) const
+  // Сообщает о количестве денег на указанном счёте
+  // Если указанный счёт отсутствует, выбрасывается исключение
+  // BankOperationError
+  [[nodiscard]] Money GetAccountBalance(AccountId accountId) const
   {
-    IncrementOperationCount();
-    std::lock_guard<std::mutex> lock(dataMutex);
-    return GetAccount(account).balance;
+    std::shared_lock bankLock(m_bankMutex);
+    EnsureExist(accountId);
+    auto &[balance, mutex] = m_accounts.at(accountId);
+    std::shared_lock accountLock(mutex);
+    return balance;
   }
 
+  // Снимает деньги со счёта. Нельзя снять больше, чем есть на счете
+  // Нельзя снять отрицательное количество денег
+  // Снятые деньги добавляются к массе наличных денег
+  // При невалидном номере счёта или отсутствии денег, выбрасывается исключение
+  // BankOperationError При отрицательном количестве денег выбрасывается
+  // std::out_of_range
   void WithdrawMoney(AccountId account, Money amount)
   {
-    IncrementOperationCount();
-    ValidateAmountNonNegative(amount);
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-
-    auto &acc = GetAccount(account);
-    if (acc.balance < amount)
-    {
-      throw BankOperationError("Insufficient funds");
-    }
-
-    acc.balance -= amount;
-    cash += amount;
+    WithdrawMoneyInternal(account, amount, true);
   }
 
-  bool TryWithdrawMoney(AccountId account, Money amount)
+  // Попытаться снять деньги в размере amount со счёта account.
+  // Объем денег в наличном обороте увеличивается на величину amount
+  // При нехватке денег на счёте возвращается false, а количество наличных денег
+  // остаётся неизменным При невалидном номере аккаунта выбрасывается
+  // BankOperationError. При отрицательном количестве денег выбрасывается
+  // std::out_of_range
+  [[nodiscard]] bool TryWithdrawMoney(AccountId account, Money amount)
   {
-    IncrementOperationCount();
-    ValidateAmountNonNegative(amount);
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-
-    auto it = accounts.find(account);
-    if (it == accounts.end())
-    {
-      throw BankOperationError("Account not found");
-    }
-
-    if (it->second.balance < amount)
-    {
-      return false;
-    }
-
-    it->second.balance -= amount;
-    cash += amount;
-    return true;
+    return WithdrawMoneyInternal(account, amount, false);
   }
 
-  void DepositMoney(AccountId account, Money amount)
+  // Поместить наличные деньги на счёт. Количество денег в наличном обороте
+  // уменьшается на величину amount.
+  // Нельзя поместить больше, чем имеется денег в наличном обороте
+  // Нельзя поместить на счёт отрицательное количество денег
+  // Нельзя поместить деньги на отсутствующий счёт
+  // При невалидном номере аккаунта или нехватке наличных денег в обороте
+  // выбрасывается BankOperationError. При отрицательном количестве денег
+  // выбрасывается std::out_of_range
+  void DepositMoney(AccountId accountId, Money amount)
   {
-    IncrementOperationCount();
-    ValidateAmountNonNegative(amount);
-
-    std::lock_guard<std::mutex> lock(dataMutex);
-
-    if (cash < amount)
+    EnsureNotNegative(amount);
+    std::shared_lock bankLock(m_bankMutex);
+    EnsureExist(accountId);
+    auto &[balance, mutex] = m_accounts.at(accountId);
+    std::unique_lock accountLock(mutex);
+    std::unique_lock cashLock(m_cashMutex);
+    if (m_cash < amount)
     {
-      throw BankOperationError("Not enough cash in reserve to deposit");
+      throw BankOperationError("insufficient funds in cash");
     }
 
-    cash -= amount;
-
-    auto &acc = GetAccount(account);
-    acc.balance += amount;
+    balance += amount;
+    m_cash -= amount;
+    m_operationsCount.fetch_add(1);
   }
 
-  AccountId OpenAccount()
+  // Открывает счёт в банке. После открытия счёта на нём нулевой баланс.
+  // Каждый открытый счёт имеет уникальный номер.
+  // Возвращает номер счёта
+  [[nodiscard]] AccountId OpenAccount()
   {
-    IncrementOperationCount();
-    std::lock_guard<std::mutex> lock(dataMutex);
-    AccountId newId = nextAccountId++;
-    accounts[newId] = AccountInfo{};
-    return newId;
+    std::unique_lock bankLock(m_bankMutex);
+    const auto id = m_nextAccountId++;
+    m_accounts.emplace(std::piecewise_construct, std::forward_as_tuple(id),
+                       std::forward_as_tuple());
+    m_operationsCount.fetch_add(1);
+
+    return id;
   }
 
-  Money CloseAccount(AccountId account)
+  // Закрывает указанный счёт.
+  // Возвращает количество денег, которые были на счёте в момент закрытия
+  // Эти деньги переходят в наличный оборот
+  // При невалидном номере аккаунта выбрасывает BankOperationError
+  [[nodiscard]] Money CloseAccount(AccountId accountId)
   {
-    IncrementOperationCount();
-    std::lock_guard<std::mutex> lock(dataMutex);
+    std::unique_lock bankLock(m_bankMutex);
+    EnsureExist(accountId);
+    const auto it = m_accounts.find(accountId);
+    const auto balance = it->second.balance;
 
-    auto it = accounts.find(account);
-    if (it == accounts.end())
-    {
-      throw BankOperationError("Account not found");
-    }
+    std::unique_lock cashLock(m_cashMutex);
 
-    Money balance = it->second.balance;
-    cash += balance;
-    accounts.erase(it);
+    m_accounts.erase(it);
+    m_cash += balance;
+    m_operationsCount.fetch_add(1);
+
     return balance;
   }
 
 private:
-  struct AccountInfo
+  bool SendMoneyInternal(AccountId srcAccountId,
+                         AccountId dstAccountId,
+                         Money amount,
+                         bool throwOnError)
   {
-    Money balance = 0;
-  };
+    EnsureNotNegative(amount);
+    std::shared_lock bankLock(m_bankMutex);
+    EnsureExist(srcAccountId, dstAccountId);
+    auto &srcAccount = m_accounts.at(srcAccountId);
+    auto &dstAccount = m_accounts.at(dstAccountId);
+    std::scoped_lock lock(srcAccount.mutex, dstAccount.mutex);
+    if (srcAccount.balance < amount)
+    {
+      if (throwOnError)
+      {
+        throw BankOperationError("insufficient funds on source account");
+      }
+      return false;
+    }
 
-  mutable std::mutex dataMutex;
-  Money cash;
-  std::unordered_map<AccountId, AccountInfo> accounts;
-  AccountId nextAccountId = 1;
-  mutable std::atomic<unsigned long long> operationsCount{0};
+    srcAccount.balance -= amount;
+    dstAccount.balance += amount;
+    m_operationsCount.fetch_add(1);
 
-  void IncrementOperationCount() const
-  {
-    operationsCount.fetch_add(1, std::memory_order_relaxed);
+    return true;
   }
 
-  void ValidateAmountNonNegative(Money amount) const
+  // Определить WithdrawMoney через TryWithdrawMoney
+  bool WithdrawMoneyInternal(AccountId accountId,
+                             Money amount,
+                             bool throwOnError)
+  {
+    EnsureNotNegative(amount);
+    std::shared_lock bankLock(m_bankMutex);
+    // возвращать итератор
+    EnsureExist(accountId);
+    auto &[balance, mutex] = m_accounts.at(accountId);
+    std::unique_lock accountLock(mutex);
+    // проверить граничные условия
+    if (balance < amount)
+    {
+      if (throwOnError)
+      {
+        throw BankOperationError("insufficient funds on account");
+      }
+      return false;
+    }
+
+    std::unique_lock cashLock(m_cashMutex);
+
+    balance -= amount;
+    m_cash += amount;
+    m_operationsCount.fetch_add(1);
+
+    return true;
+  }
+
+  static void EnsureNotNegative(Money amount)
   {
     if (amount < 0)
     {
-      throw std::out_of_range("Negative amount");
+      throw std::out_of_range("amount cannot be negative");
     }
   }
 
-  AccountInfo &GetAccount(AccountId account)
+  void EnsureExist(AccountId id) const
   {
-    auto it = accounts.find(account);
-    if (it == accounts.end())
+    if (!m_accounts.contains(id))
     {
-      throw BankOperationError("Account not found");
+      throw BankOperationError("account does not exist");
     }
-    return it->second;
   }
 
-  const AccountInfo &GetAccount(AccountId account) const
+  void EnsureExist(AccountId id1, AccountId id2) const
   {
-    auto it = accounts.find(account);
-    if (it == accounts.end())
+    if (!m_accounts.contains(id1) || !m_accounts.contains(id2))
     {
-      throw BankOperationError("Account not found");
+      throw BankOperationError("account does not exist");
     }
-    return it->second;
   }
+
+private:
+  struct Account
+  {
+    Money balance = 0;
+    mutable std::shared_mutex mutex;
+  };
+
+  Money m_cash;
+  std::atomic<unsigned long long> m_operationsCount;
+  std::unordered_map<AccountId, Account> m_accounts;
+  mutable std::shared_mutex m_cashMutex;
+  mutable std::shared_mutex m_bankMutex;
+  AccountId m_nextAccountId = 0;
 };

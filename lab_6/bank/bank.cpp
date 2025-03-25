@@ -1,13 +1,20 @@
 ﻿#include "Simulation.h"
-std::atomic<bool> Simulation::simulation_running_{true};
 
-int main(int argc, char* argv[]) {
-  std::signal(SIGINT, Simulation::SignalHandler);
-  std::signal(SIGTERM, Simulation::SignalHandler);
+#include <iostream>
 
-  Simulation simulation;
-  const bool multithreaded = (argc > 1 && std::string(argv[1]) == "parallel");
-  simulation.Run(multithreaded);
+int main(const int argc, char *argv[])
+{
+  if (argc < 2)
+  {
+    std::cout << "Usage: " << argv[0] << " <single|parallel>" << std::endl;
+    return 1;
+  }
+
+  const bool multiThreaded = (std::string(argv[1]) == "parallel");
+
+  Simulation simulation(multiThreaded);
+
+  simulation.Start();
 
   return 0;
 }

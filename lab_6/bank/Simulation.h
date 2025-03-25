@@ -1,256 +1,311 @@
-#include "Bank.h"
+﻿#pragma once
 #include <conio.h>
 #include <atomic>
 #include <csignal>
-#include <iostream>
+#include <iomanip>
 #include <memory>
-#include <mutex>
-#include <thread>
 #include <vector>
+#include "Bank.h"
+#include "Characters.h"
 
-class Simulation {
- public:
-  Simulation() : bank_(10000) {
+inline std::atomic<bool> stopProgram = false;
+inline std::atomic<bool> next = false;
+
+inline void SignalHandler(int signum)
+{
+  stopProgram.store(true);
+}
+
+class Simulation
+{
+public:
+  Simulation(bool multiThreaded)
+      : m_multiThreaded(multiThreaded)
+  {
+    std::signal(SIGTERM, SignalHandler);
+
+    m_bank = std::make_unique<Bank>(m_initialCash);
     InitializeAccounts();
     InitializeCharacters();
-    SetupInitialBalances();
   }
 
-  void Run(bool multithreaded) {
-    if (multithreaded) {
+  void Start()
+  {
+    PrintWelcomeMessage();
+
+    if (m_multiThreaded)
+    {
       RunParallel();
-    } else {
+    }
+    else
+    {
       RunSequential();
     }
+
     PrintFinalSummary();
   }
 
-  static void SignalHandler(int) {
-    simulation_running_.store(false, std::memory_order_relaxed);
-  }
-
- private:
-  Bank bank_;
-  std::mutex output_mutex_;
-  static std::atomic<bool> simulation_running_;
-
-  struct {
-    AccountId homer;
-    AccountId marge;
-    AccountId bart;
-    AccountId lisa;
-    AccountId apu;
-    AccountId burns;
-  } accounts_;
-
-  struct {
-    Money transfer = 60;
-    Money electric = 51;
-    Money grocery = 50;
-    Money salary = 1000;
-  } amounts_;
-
-  class Character {
-   public:
-    Character(Bank& bank, AccountId account, Simulation& sim)
-        : bank_(bank), account_(account), sim_(sim) {}
-    virtual ~Character() = default;
-    virtual void Run() = 0;
-
-   protected:
-    Bank& bank_;
-    AccountId account_;
-    Simulation& sim_;
-
-    void OutputStatus(const std::string& name) {
-      std::lock_guard<std::mutex> lock(sim_.output_mutex_);
-      std::cout << name << " status:" << std::endl;
-      std::cout << "  Account balance: " << bank_.GetAccountBalance(account_)
-                << std::endl;
-      std::cout << "  Total cash in the bank: " << bank_.GetCash() << std::endl
-                << std::endl;
-    }
-
-    void PassCashTo(Character& other, Money amount) {
-      if (amount <= 0)
-        return;
-      if (bank_.TryWithdrawMoney(account_, amount)) {
-        other.ReceiveCash(amount);
-        std::lock_guard<std::mutex> lock(sim_.output_mutex_);
-        std::cout << "Passed $" << amount << " from " << account_ << " to "
-                  << other.account_ << std::endl;
-      }
-    }
-
-    virtual void ReceiveCash(Money amount) {
-      if (amount > 0) {
-        bank_.DepositMoney(account_, amount);
-        std::lock_guard<std::mutex> lock(sim_.output_mutex_);
-        std::cout << account_ << " received $" << amount << std::endl;
-      }
-    }
-  };
-
-  class Homer : public Character {
-   public:
-    Homer(Bank& bank, AccountId account, Simulation& sim)
-        : Character(bank, account, sim) {}
-
-    void Run() override {
-      bank_.TrySendMoney(account_, sim_.accounts_.marge,
-                         sim_.amounts_.transfer);
-      bank_.TrySendMoney(account_, sim_.accounts_.burns,
-                         sim_.amounts_.electric);
-      OutputStatus("Homer");
-    }
-  };
-
-  class Marge : public Character {
-   public:
-    Marge(Bank& bank, AccountId account, Simulation& sim)
-        : Character(bank, account, sim) {}
-
-    void Run() override {
-      bank_.TrySendMoney(account_, sim_.accounts_.apu, sim_.amounts_.grocery);
-      OutputStatus("Marge");
-    }
-  };
-
-  class BartLisa : public Character {
-   public:
-    BartLisa(Bank& bank, AccountId account, Simulation& sim)
-        : Character(bank, account, sim) {}
-
-    void Run() override { OutputStatus("Bart & Lisa"); }
-
-    void ReceiveCash(Money amount) override {
-      if (amount > 0) {
-        bank_.DepositMoney(account_, amount);
-        std::lock_guard<std::mutex> lock(sim_.output_mutex_);
-        std::cout << account_ << " received $" << amount << std::endl;
-      }
-    }
-  };
-
-  class Apu : public Character {
-   public:
-    Apu(Bank& bank, AccountId account, Simulation& sim)
-        : Character(bank, account, sim) {}
-
-    void Run() override {
-      bank_.TrySendMoney(account_, sim_.accounts_.burns,
-                         sim_.amounts_.electric);
-      OutputStatus("Apu");
-    }
-  };
-
-  class Burns : public Character {
-   public:
-    Burns(Bank& bank, AccountId account, Simulation& sim)
-        : Character(bank, account, sim) {}
-
-    void Run() override {
-      bank_.TrySendMoney(account_, sim_.accounts_.homer, sim_.amounts_.salary);
-      OutputStatus("Mr. Burns");
-    }
-  };
-
-  std::unique_ptr<Homer> homer_;
-  std::unique_ptr<Marge> marge_;
-  std::unique_ptr<BartLisa> bart_lisa_;
-  std::unique_ptr<Apu> apu_;
-  std::unique_ptr<Burns> burns_;
-
-  void InitializeAccounts() {
-    accounts_.homer = bank_.OpenAccount();
-    accounts_.marge = bank_.OpenAccount();
-    accounts_.bart = bank_.OpenAccount();
-    accounts_.lisa = bank_.OpenAccount();
-    accounts_.apu = bank_.OpenAccount();
-    accounts_.burns = bank_.OpenAccount();
-  }
-
-  void InitializeCharacters() {
-    homer_ = std::make_unique<Homer>(bank_, accounts_.homer, *this);
-    marge_ = std::make_unique<Marge>(bank_, accounts_.marge, *this);
-    bart_lisa_ = std::make_unique<BartLisa>(bank_, accounts_.bart, *this);
-    apu_ = std::make_unique<Apu>(bank_, accounts_.apu, *this);
-    burns_ = std::make_unique<Burns>(bank_, accounts_.burns, *this);
-  }
-
-  void SetupInitialBalances() {
-    bank_.DepositMoney(accounts_.homer, 1000);
-    bank_.DepositMoney(accounts_.burns, 1100);
-    bank_.DepositMoney(accounts_.apu, 1700);
-  }
-
-  void RunParallel() {
+private:
+  void RunParallel()
+  {
     std::vector<std::jthread> threads;
-    while (simulation_running_) {
-      WaitForUserInput();
-      if (!simulation_running_)
-        break;
+    threads.emplace_back(&Homer::Run, m_homer.get(), std::ref(stopProgram));
+    threads.emplace_back(&Marge::Run, m_marge.get(), std::ref(stopProgram));
+    threads.emplace_back(&Bart::Run, m_bart.get(), std::ref(stopProgram));
+    threads.emplace_back(&Lisa::Run, m_lisa.get(), std::ref(stopProgram));
+    threads.emplace_back(&Apu::Run, m_apu.get(), std::ref(stopProgram));
+    threads.emplace_back(&Burns::Run, m_burns.get(), std::ref(stopProgram));
+    threads.emplace_back(&Nelson::Run, m_nelson.get(), std::ref(stopProgram));
+    threads.emplace_back(&Snake::Run, m_snake.get(), std::ref(stopProgram));
+    threads.emplace_back(&Smithers::Run, m_smithers.get(), std::ref(stopProgram));
 
-      threads.emplace_back([this] { homer_->Run(); });
-      threads.emplace_back([this] { marge_->Run(); });
-      threads.emplace_back([this] { bart_lisa_->Run(); });
-      threads.emplace_back([this] { apu_->Run(); });
-      threads.emplace_back([this] { burns_->Run(); });
-    }
+    threads.emplace_back([this]
+                         {
+      while (!stopProgram.load()) {
+        WaitForUserInput();
+        std::osyncstream(std::cout) << "\n=== SYSTEM STATUS ===\n";
+        std::osyncstream(std::cout)
+            << "Bank cash: $" << m_bank->GetCash() << "\n";
+        std::osyncstream(std::cout)
+            << "Total operations: " << m_bank->GetOperationsCount() << "\n\n";
+      } });
   }
 
-  void RunSequential() {
-    while (simulation_running_) {
-      WaitForUserInput();
-      if (!simulation_running_)
-        break;
-
-      homer_->Run();
-      marge_->Run();
-      bart_lisa_->Run();
-      apu_->Run();
-      burns_->Run();
-    }
-  }
-
-  void WaitForUserInput() {
+  void RunSequential()
+  {
+    while (!stopProgram.load())
     {
-      std::lock_guard<std::mutex> lock(output_mutex_);
-      std::cout << "Press SPACE to progress simulation, or Q to quit.\n";
+      WaitForUserInput();
+      if (stopProgram.load())
+        break;
+
+      ClearScreen();
+
+      m_homer->Next(m_characters);
+      m_marge->Next(m_characters);
+      m_bart->Next(m_characters);
+      m_lisa->Next(m_characters);
+      m_apu->Next(m_characters);
+      m_burns->Next(m_characters);
+      m_nelson->Next(m_characters);
+      m_snake->Next(m_characters);
+      m_smithers->Next(m_characters);
+
+      PrintCurrentState();
     }
+  }
+
+  void PrintWelcomeMessage()
+  {
+    ClearScreen();
+    std::cout << "============================================\n";
+    std::cout << "    SPRINGFIELD BANKING SIMULATION\n";
+    std::cout << "============================================\n\n";
+    std::cout << "Initial balances:\n";
+    std::cout << "- Homer:    $10,000\n";
+    std::cout << "- Marge:    $100\n";
+    std::cout << "- Bart:     $100 (cash)\n";
+    std::cout << "- Lisa:     $100 (cash)\n";
+    std::cout << "- Apu:      $200\n";
+    std::cout << "- Burns:    $100,000\n";
+    std::cout << "- Nelson:   $0\n";
+    std::cout << "- Snake:    $0\n";
+    std::cout << "- Smithers: $0\n\n";
+    std::cout << "Press SPACE to start simulation, Q to quit...\n";
+
     char key;
-    do {
+    do
+    {
       key = _getch();
     } while (key != ' ' && key != 'q');
 
-    if (key == 'q') {
-      simulation_running_ = false;
+    if (key == 'q')
+    {
+      stopProgram.store(true);
     }
   }
 
-  void PrintFinalSummary() {
-    std::lock_guard<std::mutex> lock(output_mutex_);
-    const Money total = bank_.GetCash() +
-                        bank_.GetAccountBalance(accounts_.homer) +
-                        bank_.GetAccountBalance(accounts_.marge) +
-                        bank_.GetAccountBalance(accounts_.bart) +
-                        bank_.GetAccountBalance(accounts_.lisa) +
-                        bank_.GetAccountBalance(accounts_.apu) +
-                        bank_.GetAccountBalance(accounts_.burns);
+  void WaitForUserInput()
+  {
+    std::cout
+        << "\nPress SPACE for next Next, C for continuous, Q to quit...\n";
+    char key;
+    do
+    {
+      key = _getch();
+    } while (key != ' ' && key != 'q' && key != 'c');
 
-    std::cout << "\nFinal banking summary:\n";
-    std::cout << "Total cash in the system: " << total << "\n";
-    std::cout << "Detailed balances:\n";
-    std::cout << "- Homer:  " << bank_.GetAccountBalance(accounts_.homer)
+    if (key == 'q')
+    {
+      stopProgram.store(true);
+    }
+    else if (key == 'c')
+    {
+      std::cout << "\nRunning continuously, press any key to stop...\n";
+      while (!_kbhit() && !stopProgram.load())
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+      }
+      if (_kbhit())
+        _getch();
+    }
+  }
+
+  void ClearScreen() { system("cls||clear"); }
+
+  void PrintCurrentState()
+  {
+    std::cout << "============================================\n";
+    std::cout << "    CURRENT STATE OF SPRINGFIELD BANK\n";
+    std::cout << "============================================\n\n";
+
+    std::cout << "Bank cash: $" << std::setw(9) << m_bank->GetCash() << "\n";
+    std::cout << "Bank operations: " << m_bank->GetOperationsCount() << "\n\n";
+
+    std::cout << "ACCOUNT BALANCES:\n";
+    std::cout << "- Homer:    $" << std::setw(9) << m_homer->GetAccountBalance()
               << "\n";
-    std::cout << "- Marge:  " << bank_.GetAccountBalance(accounts_.marge)
+    std::cout << "- Marge:    $" << std::setw(9) << m_marge->GetAccountBalance()
               << "\n";
-    std::cout << "- Bart:   " << bank_.GetAccountBalance(accounts_.bart)
+    std::cout << "- Apu:      $" << std::setw(9) << m_apu->GetAccountBalance()
               << "\n";
-    std::cout << "- Lisa:   " << bank_.GetAccountBalance(accounts_.lisa)
+    std::cout << "- Burns:    $" << std::setw(9) << m_burns->GetAccountBalance()
               << "\n";
-    std::cout << "- Apu:    " << bank_.GetAccountBalance(accounts_.apu) << "\n";
-    std::cout << "- Burns:  " << bank_.GetAccountBalance(accounts_.burns)
+    std::cout << "- Snake:    $" << std::setw(9) << m_snake->GetAccountBalance()
               << "\n";
+    std::cout << "- Smithers: $" << std::setw(9)
+              << m_smithers->GetAccountBalance() << "\n\n";
+
+    std::cout << "CASH HOLDINGS:\n";
+    std::cout << "- Bart:     $" << std::setw(9) << m_bart->GetCash() << "\n";
+    std::cout << "- Lisa:     $" << std::setw(9) << m_lisa->GetCash() << "\n";
+    std::cout << "- Nelson:   $" << std::setw(9) << m_nelson->GetCash()
+              << "\n\n";
+
+    std::cout << "Consistency check: " << (IsConsistent() ? "PASSED" : "FAILED")
+              << "\n";
+    std::cout << "============================================\n";
+  }
+
+  void PrintFinalSummary()
+  {
+    ClearScreen();
+    std::cout << "============================================\n";
+    std::cout << "    FINAL SIMULATION SUMMARY\n";
+    std::cout << "============================================\n\n";
+
+    std::cout << "Total bank operations: " << m_bank->GetOperationsCount()
+              << "\n\n";
+
+    std::cout << "FINAL ACCOUNT BALANCES:\n";
+    std::cout << "- Homer:    $" << std::setw(9) << m_homer->GetAccountBalance()
+              << "\n";
+    std::cout << "- Marge:    $" << std::setw(9) << m_marge->GetAccountBalance()
+              << "\n";
+    std::cout << "- Apu:      $" << std::setw(9) << m_apu->GetAccountBalance()
+              << "\n";
+    std::cout << "- Burns:    $" << std::setw(9) << m_burns->GetAccountBalance()
+              << "\n";
+    std::cout << "- Snake:    $" << std::setw(9) << m_snake->GetAccountBalance()
+              << "\n";
+    std::cout << "- Smithers: $" << std::setw(9)
+              << m_smithers->GetAccountBalance() << "\n\n";
+
+    std::cout << "FINAL CASH HOLDINGS:\n";
+    std::cout << "- Bart:     $" << std::setw(9) << m_bart->GetCash() << "\n";
+    std::cout << "- Lisa:     $" << std::setw(9) << m_lisa->GetCash() << "\n";
+    std::cout << "- Nelson:   $" << std::setw(9) << m_nelson->GetCash()
+              << "\n\n";
+
+    std::cout << "Bank cash reserves: $" << m_bank->GetCash() << "\n";
+    std::cout << "Consistency check: " << (IsConsistent() ? "PASSED" : "FAILED")
+              << "\n";
+    std::cout << "============================================\n";
+  }
+
+  [[nodiscard]] bool IsConsistent() const
+  {
+    const Money bankCash = m_bank->GetCash();
+    const Money totalCharacterCash =
+        m_homer->GetCash() + m_marge->GetCash() + m_bart->GetCash() +
+        m_lisa->GetCash() + m_apu->GetCash() + m_burns->GetCash() +
+        m_nelson->GetCash() + m_snake->GetCash() + m_smithers->GetCash();
+
+    const Money totalCharacterBalance =
+        m_homer->GetAccountBalance() + m_marge->GetAccountBalance() +
+        m_apu->GetAccountBalance() + m_burns->GetAccountBalance() +
+        m_snake->GetAccountBalance() + m_smithers->GetAccountBalance();
+
+    const Money totalMoney = totalCharacterBalance + totalCharacterCash;
+
+    std::cout << "\nDEBUG INFO:\n";
+    std::cout << "Bank cash: " << bankCash << "\n";
+    std::cout << "Total accounts: " << totalCharacterBalance << "\n";
+    std::cout << "Total character cash: " << totalCharacterCash << "\n";
+    std::cout << "Initial cash: " << m_initialCash << "\n";
+    std::cout << "Total money: " << totalMoney << "\n";
+
+    return totalMoney == m_initialCash;
+  }
+
+private:
+  bool m_multiThreaded;
+  std::unique_ptr<Bank> m_bank;
+  AccountId m_homerAccount;
+  AccountId m_margeAccount;
+  AccountId m_apuAccount;
+  AccountId m_burnsAccount;
+  AccountId m_snakeAccount;
+  AccountId m_smithersAccount;
+
+  std::unique_ptr<Homer> m_homer;
+  std::unique_ptr<Marge> m_marge;
+  std::unique_ptr<Bart> m_bart;
+  std::unique_ptr<Lisa> m_lisa;
+  std::unique_ptr<Apu> m_apu;
+  std::unique_ptr<Burns> m_burns;
+  std::unique_ptr<Nelson> m_nelson;
+  std::unique_ptr<Snake> m_snake;
+  std::unique_ptr<Smithers> m_smithers;
+
+  Characters m_characters;
+  Money m_initialCash = 110'500;
+
+  void InitializeAccounts()
+  {
+    m_homerAccount = m_bank->OpenAccount();
+    m_margeAccount = m_bank->OpenAccount();
+    m_apuAccount = m_bank->OpenAccount();
+    m_burnsAccount = m_bank->OpenAccount();
+    m_snakeAccount = m_bank->OpenAccount();
+    m_smithersAccount = m_bank->OpenAccount();
+  }
+
+  void InitializeCharacters()
+  {
+    m_homer = std::make_unique<Homer>(10'000, m_homerAccount, m_characters,
+                                      *m_bank);
+    m_marge = std::make_unique<Marge>(100, m_margeAccount, m_characters,
+                                      *m_bank);
+    m_bart = std::make_unique<Bart>(100, m_characters);
+    m_lisa = std::make_unique<Lisa>(100, m_characters);
+    m_apu =
+        std::make_unique<Apu>(200, m_apuAccount, m_characters, *m_bank);
+    m_burns = std::make_unique<Burns>(100'000, m_burnsAccount, m_characters,
+                                      *m_bank);
+    m_nelson = std::make_unique<Nelson>(0, m_characters);
+    m_snake = std::make_unique<Snake>(0, m_snakeAccount, m_characters, *m_bank);
+    m_smithers = std::make_unique<Smithers>(0, m_smithersAccount, m_characters,
+                                            *m_bank);
+
+    m_characters.homer = m_homer.get();
+    m_characters.marge = m_marge.get();
+    m_characters.bart = m_bart.get();
+    m_characters.lisa = m_lisa.get();
+    m_characters.apu = m_apu.get();
+    m_characters.burns = m_burns.get();
+    m_characters.nelson = m_nelson.get();
+    m_characters.snake = m_snake.get();
+    m_characters.smithers = m_smithers.get();
   }
 };
